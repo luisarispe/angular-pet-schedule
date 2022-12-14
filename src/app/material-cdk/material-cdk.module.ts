@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatNativeDateModule } from '@angular/material/core';
 import {
@@ -11,10 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSortModule } from '@angular/material/sort';
 import { getSpainPaginatorIntl } from './spain-paginator-intl';
 import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 const declaration = [
-  FormsModule,
-  ReactiveFormsModule,
   MatTableModule,
   MatNativeDateModule,
   MatPaginatorModule,
@@ -22,6 +20,7 @@ const declaration = [
   MatInputModule,
   MatSortModule,
   MatIconModule,
+  MatProgressBarModule,
 ];
 
 @NgModule({
