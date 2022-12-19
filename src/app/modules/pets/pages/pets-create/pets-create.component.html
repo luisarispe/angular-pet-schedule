@@ -1,0 +1,19 @@
+<div class="container m-auto">
+  <!-- Header -->
+  <div
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-8 px-2 md:px-8 border-b"
+  >
+    <!-- Title -->
+    <div class="text-4xl font-extrabold tracking-tight">Mascota</div>
+    <!-- Actions -->
+    <!-- Add pet button -->
+    <button
+      (click)="sendPets()"
+      class="bg-blue-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-blue-800"
+      mat-flat-button
+    >
+      <mat-icon>list_alt</mat-icon>
+      <span class="ml-2 mr-1">Mascotas</span>
+    </button>
+  </div>
+</div>

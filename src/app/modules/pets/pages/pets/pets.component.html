@@ -19,13 +19,12 @@
           matInput
           [autocomplete]="'off'"
           [placeholder]="'Buscar Mascotas'"
-          (keyup)="applyFilter($event)"
-          #input
+          #inputFilter
         />
       </div>
       <!-- Add pet button -->
       <button
-        (click)="opeAddModal()"
+        (click)="sendCreate()"
         class="bg-blue-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-blue-800"
         mat-flat-button
       >
@@ -35,24 +34,29 @@
     </div>
   </div>
   <!--Loading-->
-  <ng-container *ngIf="isLoading | async as isLoading">
-    <ng-container *ngIf="isLoading; else loading">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    </ng-container>
-    <ng-template #loading>
-      <mat-progress-bar mode="determinate"></mat-progress-bar>
-    </ng-template>
+  <ng-container *ngIf="isLoading$ | async as isLoading; else prueba">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   </ng-container>
+  <ng-template #prueba>
+    <mat-progress-bar mode="determinate"></mat-progress-bar>
+  </ng-template>
 
   <!--Table-->
   <div class="mat-elevation-z3 overflow-auto bg-white">
-    <table mat-table [dataSource]="dataSource" matSort>
+    <table
+      mat-table
+      [dataSource]="dataSource"
+      matSort
+      matSortActive="pet.name"
+      matSortDirection="asc"
+      matSortDisableClear
+    >
       <!-- Name Column -->
-      <ng-container matColumnDef="name">
+      <ng-container matColumnDef="pet.name">
         <th
           class="bg-gray-100 dark:bg-black dark:bg-opacity-5 pl-4 font-semibold text-teal-700"
           *matHeaderCellDef
-          [mat-sort-header]="'name'"
+          [mat-sort-header]="'pet.name'"
         >
           Nombre
         </th>
@@ -60,11 +64,11 @@
       </ng-container>
 
       <!-- Sex Column -->
-      <ng-container matColumnDef="sex">
+      <ng-container matColumnDef="pet.sex">
         <th
           class="bg-gray-100 dark:bg-black dark:bg-opacity-5 pl-4 font-semibold text-teal-700"
           *matHeaderCellDef
-          mat-sort-header
+          [mat-sort-header]="'pet.sex'"
         >
           Sexo
         </th>
@@ -72,11 +76,11 @@
       </ng-container>
 
       <!-- Age Column -->
-      <ng-container matColumnDef="age">
+      <ng-container matColumnDef="pet.age">
         <th
           class="bg-gray-100 dark:bg-black dark:bg-opacity-5 pl-4 font-semibold text-teal-700"
           *matHeaderCellDef
-          mat-sort-header
+          [mat-sort-header]="'pet.age'"
         >
           Edad
         </th>
@@ -84,11 +88,11 @@
       </ng-container>
 
       <!-- Species Column -->
-      <ng-container matColumnDef="species">
+      <ng-container matColumnDef="species.name">
         <th
           class="bg-gray-100 dark:bg-black dark:bg-opacity-5 pl-4 font-semibold text-teal-700"
           *matHeaderCellDef
-          mat-sort-header
+          [mat-sort-header]="'species.name'"
         >
           Especie
         </th>
@@ -98,11 +102,11 @@
       </ng-container>
 
       <!-- Create Column -->
-      <ng-container matColumnDef="createdAt">
+      <ng-container matColumnDef="pet.createdAt">
         <th
           class="bg-gray-100 dark:bg-black dark:bg-opacity-5 pl-4 font-semibold text-teal-700"
           *matHeaderCellDef
-          mat-sort-header
+          [mat-sort-header]="'pet.createdAt'"
         >
           Creado
         </th>
@@ -112,11 +116,11 @@
       </ng-container>
 
       <!-- Update Column -->
-      <ng-container matColumnDef="updatedAt">
+      <ng-container matColumnDef="pet.updatedAt">
         <th
           class="bg-gray-100 dark:bg-black dark:bg-opacity-5 pl-4 font-semibold text-teal-700"
           *matHeaderCellDef
-          mat-sort-header
+          [mat-sort-header]="'pet.updatedAt'"
         >
           Actualizado
         </th>
@@ -135,9 +139,10 @@
         </td>
       </tr>
     </table>
-
     <mat-paginator
       [pageSizeOptions]="[5, 10, 25, 100]"
+      [pageSize]="5"
+      [length]="countPets"
       aria-label="Seleccionar página de items"
     ></mat-paginator>
   </div>
