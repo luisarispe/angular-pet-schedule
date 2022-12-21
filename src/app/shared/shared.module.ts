@@ -4,6 +4,7 @@ import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { SplashScreenService } from './services/splash-screen.service';
 
 const declarables = [HeaderComponent, FooterComponent];
 
@@ -12,4 +13,6 @@ const declarables = [HeaderComponent, FooterComponent];
   imports: [CommonModule],
   exports: [declarables, FormsModule, ReactiveFormsModule, HttpClientModule],
 })
-export class SharedModule {}
+export class SharedModule {
+  constructor(private _splashScreenService: SplashScreenService) {}
+}

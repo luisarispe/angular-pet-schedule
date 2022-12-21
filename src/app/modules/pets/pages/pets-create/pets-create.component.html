@@ -1,7 +1,7 @@
 <div class="container m-auto">
   <!-- Header -->
   <div
-    class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-8 px-2 md:px-8 border-b"
+    class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-8 px-2 md:px-8"
   >
     <!-- Title -->
     <div class="text-4xl font-extrabold tracking-tight">Mascota</div>
@@ -16,4 +16,131 @@
       <span class="ml-2 mr-1">Mascotas</span>
     </button>
   </div>
+  <!--Card Form-->
+  <div class="bg-white p-5 rounded-lg">
+    <!--Form-->
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <form [formGroup]="petForm">
+        <div class="flex flex-col">
+          <mat-form-field>
+            <mat-label>Nombre</mat-label>
+            <input
+              matInput
+              [formControlName]="'name'"
+              placeholder="Ej. Boby"
+              maxlength="100"
+            />
+            <mat-error *ngIf="petForm.get('name')?.hasError('required')">
+              El valor es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Sexo</mat-label>
+            <mat-select [formControlName]="'sex'">
+              <mat-option value="hembra">Hembra</mat-option>
+              <mat-option value="macho">Macho</mat-option>
+            </mat-select>
+            <mat-error *ngIf="petForm.get('sex')?.hasError('required')">
+              El valor es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Edad</mat-label>
+            <input
+              matInput
+              [formControlName]="'age'"
+              placeholder="Ej. 15"
+              maxlength="11"
+              type="number"
+            />
+            <mat-error *ngIf="petForm.get('age')?.hasError('required')">
+              El valor es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Especie</mat-label>
+            <mat-select [formControlName]="'idSpecies'">
+              <ng-container *ngIf="species$ | async as species">
+                <mat-option
+                  *ngFor="let specie of species"
+                  [value]="specie.id"
+                  >{{ specie.name | titlecase }}</mat-option
+                >
+              </ng-container>
+            </mat-select>
+            <mat-error *ngIf="petForm.get('idSpecies')?.hasError('required')">
+              El valor es requerido.
+            </mat-error>
+          </mat-form-field>
+
+          <!-- <div class="mt-2 text-red-600" *ngIf="messageError">
+                No fue posible crear la tarea.
+            </div> -->
+        </div>
+      </form>
+      <!--Imagen Load-->
+      <div class="flex flex-col items-center">
+        <div>
+          <button
+            (click)="imageFileInput.click()"
+            class="bg-neutral-500 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-green-800"
+            mat-flat-button
+          >
+            <mat-icon>image</mat-icon>
+            <span class="ml-2 mr-1">Imagen Mascota</span>
+          </button>
+          <input
+            hidden
+            type="file"
+            [multiple]="false"
+            [accept]="'image/jpeg, image/png'"
+            (change)="uploadImage(imageFileInput.files!)"
+            #imageFileInput
+          />
+        </div>
+        <ng-container *ngIf="errorImage">
+          <span class="bg-red-700 text-white rounded-2xl p-3 mt-3">
+            Archivo no valido
+          </span>
+        </ng-container>
+        <div class="flex flex-col items-start p-5">
+          <img
+            class="w-52"
+            [src]="
+              imagenTmp != null ? imagenTmp : 'assets/jpg/adjunt_image.jpg'
+            "
+          />
+        </div>
+      </div>
+    </div>
+    <!--End Grid-->
+    <!--Actions-->
+    <div class="flex flex-row p-3 justify-end">
+      <button
+        class="bg-green-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-green-800"
+        (click)="create()"
+        [disabled]="createLoad"
+        mat-flat-button
+      >
+        <ng-container *ngIf="createLoad; else noload">
+          <mat-icon class="animate-spin text-white">sync</mat-icon>
+        </ng-container>
+        <ng-template #noload>
+          <mat-icon>save</mat-icon>
+        </ng-template>
+        <span class="ml-2 mr-1">Guardar</span>
+      </button>
+      <button
+        (click)="clearForm()"
+        class="bg-amber-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-amber-800"
+        mat-flat-button
+      >
+        <mat-icon>remove</mat-icon>
+        <span class="ml-2 mr-1">Limpiar</span>
+      </button>
+    </div>
+    <!--End Actios-->
+  </div>
+  <!--End Card-->
 </div>
+<!--End Container-->

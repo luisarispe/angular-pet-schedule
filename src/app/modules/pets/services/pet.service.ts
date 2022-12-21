@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Pet } from '../interfaces/pet-interface';
+import { PetForm } from '../interfaces/pet-form-interface';
 
 const base_url = environment.base_url;
 
@@ -67,13 +68,19 @@ export class PetService {
         })
       );
   }
-  create(): Observable<Pet> {
-    const pet = {
-      name: 'Michi4' + Math.random(),
-      age: 2,
-      idSpecies: 6,
-      sex: 'hembra',
-    };
-    return this._http.post<Pet>(`${base_url}api/pets`, pet);
+  create(petForm: PetForm, file?: File | null): Observable<Pet> {
+    const formData = new FormData();
+
+    formData.append('name', petForm.name);
+    formData.append('age', petForm.age.toString());
+    formData.append('idSpecies', petForm.idSpecies.toString());
+    formData.append('sex', petForm.sex);
+    if (file) {
+      formData.append('file', file);
+    }
+
+    return this._http
+      .post<Pet>(`${base_url}api/pets`, formData)
+      .pipe(delay(5000));
   }
 }

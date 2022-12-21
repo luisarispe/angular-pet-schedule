@@ -11,6 +11,8 @@ import { MatSortModule } from '@angular/material/sort';
 import { getSpainPaginatorIntl } from './spain-paginator-intl';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const declaration = [
   MatTableModule,
@@ -21,6 +23,8 @@ const declaration = [
   MatSortModule,
   MatIconModule,
   MatProgressBarModule,
+  MatSelectModule,
+  MatProgressSpinnerModule,
 ];
 
 @NgModule({
