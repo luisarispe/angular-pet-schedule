@@ -27,7 +27,6 @@ import { PetService } from '../../services/pet.service';
   styleUrls: ['./pets.component.css'],
 })
 export class PetsComponent implements OnInit, OnDestroy {
-  isLoading$: Observable<boolean> = new Observable();
   private _destroyed$ = new Subject();
   countPets: number = 0;
   displayedColumns: string[] = [
@@ -44,7 +43,6 @@ export class PetsComponent implements OnInit, OnDestroy {
   @ViewChild('inputFilter') inputFilter: ElementRef = {} as ElementRef;
 
   constructor(private _petService: PetService, private _router: Router) {
-    this.isLoading$ = this._petService.isLoading$;
     this._petService.countPets$.pipe(takeUntil(this._destroyed$)).subscribe({
       next: (count) => (this.countPets = count),
       error: () => (this.countPets = 0),

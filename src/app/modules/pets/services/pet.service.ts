@@ -17,17 +17,10 @@ export class PetService {
   public pets$: Observable<Pet[]> = this._pets.asObservable();
   public countPets$: Observable<number> = this._countPets.asObservable();
 
-  private _isLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(
-    false
-  );
-  public isLoading$: Observable<boolean> = this._isLoading.asObservable();
   constructor(private _http: HttpClient) {}
 
   set pets(value: Pet[]) {
     this._pets.next(value);
-  }
-  set isLoading(value: boolean) {
-    this._isLoading.next(value);
   }
   set countPets(value: number) {
     this._countPets.next(value);
@@ -40,8 +33,6 @@ export class PetService {
     sortActive: string = 'name',
     filter: string = ''
   ) {
-    this.isLoading = true;
-
     pageIndex == 0 ? (this._offset = 0) : (this._offset = pageIndex * pageSize);
 
     const params = new HttpParams()
@@ -58,12 +49,10 @@ export class PetService {
       .pipe(
         tap((resp: { count: number; pets: Pet[] }) => {
           this.pets = resp.pets;
-          this.isLoading = false;
           this.countPets = resp.count;
         }),
         catchError((_) => {
           this.pets = [];
-          this.isLoading = false;
           return of();
         })
       );
