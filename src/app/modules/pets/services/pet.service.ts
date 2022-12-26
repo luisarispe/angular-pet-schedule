@@ -26,7 +26,7 @@ export class PetService {
     this._countPets.next(value);
   }
 
-  getAll(
+  findAll(
     pageIndex: number = 0,
     pageSize: number = 5,
     sortDirection: string = 'asc',
@@ -68,8 +68,25 @@ export class PetService {
       formData.append('file', file);
     }
 
-    return this._http
-      .post<Pet>(`${base_url}api/pets`, formData)
-      .pipe(delay(5000));
+    return this._http.post<Pet>(`${base_url}api/pets`, formData);
+  }
+  update(petForm: PetForm, id: string, file?: File | null) {
+    const formData = new FormData();
+
+    formData.append('name', petForm.name);
+    formData.append('age', petForm.age.toString());
+    formData.append('idSpecies', petForm.idSpecies.toString());
+    formData.append('sex', petForm.sex);
+    if (file) {
+      formData.append('file', file);
+    }
+
+    return this._http.patch<Pet>(`${base_url}api/pets/${id}`, formData);
+  }
+  findOne(id: string): Observable<Pet> {
+    return this._http.get<Pet>(`${base_url}api/pets/${id}`);
+  }
+  remove(id: string): Observable<Pet> {
+    return this._http.delete<Pet>(`${base_url}api/pets/${id}`);
   }
 }

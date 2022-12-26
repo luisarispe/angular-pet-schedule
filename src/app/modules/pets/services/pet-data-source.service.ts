@@ -1,6 +1,6 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Pet } from '../interfaces/pet-interface';
 import { PetService } from './pet.service';
 
@@ -14,7 +14,7 @@ export class PetDataSourceService extends DataSource<Pet> {
   }
 
   disconnect(): void {}
-  loadPet(
+  load(
     pageIndex: number = 0,
     pageSize: number = 5,
     sortDirection: string = 'asc',
@@ -22,7 +22,7 @@ export class PetDataSourceService extends DataSource<Pet> {
     filter: string = ''
   ): void {
     this.petService
-      .getAll(pageIndex, pageSize, sortDirection, sortActive, filter)
+      .findAll(pageIndex, pageSize, sortDirection, sortActive, filter)
       .subscribe();
   }
 }

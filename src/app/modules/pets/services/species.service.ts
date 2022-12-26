@@ -31,7 +31,6 @@ export class SpeciesService {
   getAll(): Observable<Specie[]> {
     return this._http.get<Specie[]>(`${base_url}api/species`).pipe(
       tap((species: Specie[]) => {
-        console.log(species);
         this.species = species;
       }),
       catchError(() => {

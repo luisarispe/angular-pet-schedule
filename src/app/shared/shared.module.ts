@@ -8,8 +8,14 @@ import { SplashScreenService } from './services/splash-screen.service';
 import { LoaderComponent } from './components/loader/loader.component';
 import { MaterialCdkModule } from '../material-cdk/material-cdk.module';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
+import { FirstTitleUpperPipe } from './pipes/first-title-upper.pipe';
 
-const declarables = [HeaderComponent, FooterComponent, LoaderComponent];
+const declarables = [
+  HeaderComponent,
+  FooterComponent,
+  LoaderComponent,
+  FirstTitleUpperPipe,
+];
 
 @NgModule({
   declarations: [declarables, LoaderComponent],

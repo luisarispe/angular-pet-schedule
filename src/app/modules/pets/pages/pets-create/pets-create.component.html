@@ -8,9 +8,8 @@
     <!-- Actions -->
     <!-- Add pet button -->
     <button
-      (click)="sendPets()"
+      (click)="redirectPets()"
       class="bg-blue-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-blue-800"
-      mat-flat-button
     >
       <mat-icon>list_alt</mat-icon>
       <span class="ml-2 mr-1">Mascotas</span>
@@ -29,6 +28,7 @@
               [formControlName]="'name'"
               placeholder="Ej. Boby"
               maxlength="100"
+              autocomplete="off"
             />
             <mat-error *ngIf="petForm.get('name')?.hasError('required')">
               El valor es requerido.
@@ -52,6 +52,7 @@
               placeholder="Ej. 15"
               maxlength="11"
               type="number"
+              autocomplete="off"
             />
             <mat-error *ngIf="petForm.get('age')?.hasError('required')">
               El valor es requerido.
@@ -72,11 +73,8 @@
               El valor es requerido.
             </mat-error>
           </mat-form-field>
-
-          <!-- <div class="mt-2 text-red-600" *ngIf="messageError">
-                No fue posible crear la tarea.
-            </div> -->
         </div>
+        <!--End col-->
       </form>
       <!--Imagen Load-->
       <div class="flex flex-col items-center">
@@ -112,20 +110,28 @@
           />
         </div>
       </div>
+      <!--End col-->
     </div>
     <!--End Grid-->
+    <div class="mt-2 text-red-600" *ngIf="errorCreate.length > 0">
+      <ul>
+        <li *ngFor="let error of errorCreate">
+          *{{ error | firstTitleUpper }}
+        </li>
+      </ul>
+    </div>
     <!--Actions-->
     <div class="flex flex-row p-3 justify-end">
       <button
         class="bg-green-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-green-800"
-        (click)="create()"
+        (click)="idPet ? update() : create()"
         [disabled]="createLoad"
         mat-flat-button
       >
-        <ng-container *ngIf="createLoad; else noload">
+        <ng-container *ngIf="createLoad; else noLoad">
           <mat-icon class="animate-spin text-white">sync</mat-icon>
         </ng-container>
-        <ng-template #noload>
+        <ng-template #noLoad>
           <mat-icon>save</mat-icon>
         </ng-template>
         <span class="ml-2 mr-1">Guardar</span>

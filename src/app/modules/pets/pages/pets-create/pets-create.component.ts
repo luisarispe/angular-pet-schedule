@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, Subject, takeUntil } from 'rxjs';
 import { PetService } from '../../services/pet.service';
-import { ThisReceiver } from '@angular/compiler';
 import { SpeciesService } from '../../services/species.service';
-import { Observable } from 'rxjs';
+import { HelpersService } from 'src/app/shared/services/helpers.service';
 import { Specie } from '../../interfaces/specie-interface';
 
 @Component({
@@ -12,12 +12,14 @@ import { Specie } from '../../interfaces/specie-interface';
   templateUrl: './pets-create.component.html',
   styleUrls: ['./pets-create.component.css'],
 })
-export class PetsCreateComponent implements OnInit {
-  id: any;
+export class PetsCreateComponent implements OnInit, OnDestroy {
+  idPet: any = null;
   imagenTmp: string | null = null;
   private file?: File | null;
   errorImage: boolean = false;
   createLoad: boolean = false;
+  errorCreate: string[] = [];
+  private _destroyed$ = new Subject();
   petForm: FormGroup = this._formbuild.group({
     name: ['', [Validators.required]],
     age: ['', [Validators.required]],
@@ -28,48 +30,58 @@ export class PetsCreateComponent implements OnInit {
   species$: Observable<Specie[]> = new Observable();
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
+    private _route: ActivatedRoute,
+    private _router: Router,
     private _formbuild: FormBuilder,
     private _petService: PetService,
-    private _speciesService: SpeciesService
+    private _speciesService: SpeciesService,
+    private _helperService: HelpersService
   ) {
     this.species$ = this._speciesService.species$;
   }
+
   ngOnInit(): void {
-    this.id = this.route.snapshot.queryParamMap.get('id');
-    // console.log(this.id);
+    this.idPet = this._route.snapshot.queryParamMap.get('id');
+    if (this.idPet) {
+      this.findOne();
+    }
   }
-  clearForm() {
+
+  ngOnDestroy(): void {
+    this._destroyed$.next(null);
+    this._destroyed$.complete();
+  }
+
+  findOne(): void {
+    this._petService
+      .findOne(this.idPet)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: (pet) => {
+          this.petForm.patchValue({
+            name: pet.name,
+            age: pet.age,
+            idSpecies: pet.species.id,
+            sex: pet.sex,
+          });
+          this.imagenTmp = pet.urlImage;
+        },
+        error: (error) => {
+          this.idPet = null;
+        },
+      });
+  }
+  clearForm(): void {
     this.imagenTmp = null;
     this.file = null;
     this.errorImage = false;
+    this.errorCreate = [];
     this.petForm.reset();
   }
-  sendPets() {
-    this.router.navigateByUrl('/pets');
-    // this.router.navigate(['/pets/create'], { queryParams: { id: 0 } });
+  redirectPets(): void {
+    this._router.navigateByUrl('/pets');
   }
-  private _readAsDataURL(file: File): Promise<any> {
-    // Return a new promise
-    return new Promise((resolve, reject) => {
-      // Create a new reader
-      const reader = new FileReader();
 
-      // Resolve the promise on success
-      reader.onload = (): void => {
-        resolve(reader.result);
-      };
-
-      // Reject the promise on error
-      reader.onerror = (e): void => {
-        reject(e);
-      };
-
-      // Read the file as the
-      reader.readAsDataURL(file);
-    });
-  }
   uploadImage(fileList: FileList): void {
     // Return if canceled
     if (!fileList.length) {
@@ -87,28 +99,56 @@ export class PetsCreateComponent implements OnInit {
       return;
     }
 
-    this._readAsDataURL(file).then((data) => {
+    this._helperService.readAsDataURL(file).then((data) => {
       // Update the image
       this.errorImage = false;
       this.imagenTmp = data;
       this.file = fileList[0];
     });
   }
-  create() {
+
+  create(): void {
     if (this.petForm.invalid) {
       this.petForm.markAllAsTouched();
       return;
     }
     this.createLoad = true;
-    this._petService.create(this.petForm.value, this.file).subscribe({
-      next: (res) => {
-        this.createLoad = false;
-        this.router.navigateByUrl('/pets');
-      },
-      error: (error) => {
-        this.createLoad = false;
-        console.log(error);
-      },
-    });
+    this._petService
+      .create(this.petForm.value, this.file)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: (res) => {
+          this.createLoad = false;
+          this._router.navigateByUrl('/pets');
+        },
+        error: (error) => {
+          this.errorCreate = Array.isArray(error.error.message)
+            ? error.error.message
+            : [error.error.message];
+          this.createLoad = false;
+        },
+      });
+  }
+  update() {
+    if (this.petForm.invalid) {
+      this.petForm.markAllAsTouched();
+      return;
+    }
+    this.createLoad = true;
+    this._petService
+      .update(this.petForm.value, this.idPet, this.file)
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: (res) => {
+          this.createLoad = false;
+          this._router.navigateByUrl('/pets');
+        },
+        error: (error) => {
+          this.errorCreate = Array.isArray(error.error.message)
+            ? error.error.message
+            : [error.error.message];
+          this.createLoad = false;
+        },
+      });
   }
 }

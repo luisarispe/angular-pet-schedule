@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  Observable,
   Subject,
   debounceTime,
   distinctUntilChanged,
@@ -36,6 +35,7 @@ export class PetsComponent implements OnInit, OnDestroy {
     'species.name',
     'pet.createdAt',
     'pet.updatedAt',
+    'actions',
   ];
   dataSource = new PetDataSourceService(this._petService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -49,10 +49,10 @@ export class PetsComponent implements OnInit, OnDestroy {
     });
   }
   ngOnInit(): void {
-    this.dataSource.loadPet();
+    this.dataSource.load();
   }
   ngAfterViewInit(): void {
-    this.searchPets();
+    this.search();
     this.paginaterSortPage();
   }
 
@@ -61,8 +61,8 @@ export class PetsComponent implements OnInit, OnDestroy {
     this._destroyed$.complete();
   }
 
-  loadPets(): void {
-    this.dataSource.loadPet(
+  load(): void {
+    this.dataSource.load(
       this.paginator.pageIndex,
       this.paginator.pageSize,
       this.sort.direction,
@@ -71,14 +71,14 @@ export class PetsComponent implements OnInit, OnDestroy {
     );
   }
 
-  searchPets(): void {
+  search(): void {
     fromEvent(this.inputFilter.nativeElement, 'keyup')
       .pipe(
         debounceTime(250),
         distinctUntilChanged(),
         tap(() => {
           this.paginator.pageIndex = 0;
-          this.loadPets();
+          this.load();
         })
       )
       .subscribe();
@@ -89,15 +89,28 @@ export class PetsComponent implements OnInit, OnDestroy {
     merge(this.sort.sortChange, this.paginator.page)
       .pipe(
         tap(() => {
-          this.loadPets();
+          this.load();
           takeUntil(this._destroyed$);
         })
       )
       .subscribe();
   }
 
-  sendCreate(): void {
+  redirectCreate(): void {
     this._router.navigateByUrl('/pets/create');
-    // this.router.navigate(['/pets/create'], { queryParams: { id: 0 } });
+  }
+  redirectUpdate(id: string): void {
+    this._router.navigate(['/pets/create'], { queryParams: { id } });
+  }
+  remove(id: string) {
+    this._petService.remove(id).subscribe({
+      next: (resp) => {
+        console.log(resp);
+        this.load();
+      },
+      error: (error) => {
+        console.log(error);
+      },
+    });
   }
 }
