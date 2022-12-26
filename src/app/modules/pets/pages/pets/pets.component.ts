@@ -17,8 +17,13 @@ import {
 } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+
+import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
 import { PetDataSourceService } from '../../services/pet-data-source.service';
 import { PetService } from '../../services/pet.service';
+import { Pet } from '../../interfaces/pet-interface';
 
 @Component({
   selector: 'app-pets',
@@ -102,15 +107,18 @@ export class PetsComponent implements OnInit, OnDestroy {
   redirectUpdate(id: string): void {
     this._router.navigate(['/pets/create'], { queryParams: { id } });
   }
-  remove(id: string) {
-    this._petService.remove(id).subscribe({
-      next: (resp) => {
-        console.log(resp);
-        this.load();
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
+  remove(pet: Pet) {
+    Confirm.show(
+      '',
+      `Está seguro de eliminar la mascota: "${pet.name}"?`,
+      'Si',
+      'No',
+      () => {
+        this._petService.remove(pet.id).subscribe({
+          complete: () => this.load(),
+          error: (error) => Notify.failure('No fue posible elimiar la mascota'),
+        });
+      }
+    );
   }
 }

@@ -109,7 +109,7 @@
           {{ row.updatedAt | date : "medium" }}
         </td>
       </ng-container>
-      <!-- Update Column -->
+      <!-- Actions Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef>
           <mat-icon class="text-blue-900">build</mat-icon>
@@ -121,7 +121,7 @@
           >
             <mat-icon class="text-white text-lg">edit</mat-icon>
           </button>
-          <button class="bg-red-700 rounded-lg p-1" (click)="remove(row.id)">
+          <button class="bg-red-700 rounded-lg p-1" (click)="remove(row)">
             <mat-icon class="text-white text-lg">restore_from_trash</mat-icon>
           </button>
         </td>
