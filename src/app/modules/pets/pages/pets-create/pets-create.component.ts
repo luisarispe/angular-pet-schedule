@@ -91,8 +91,9 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     const allowedTypes = ['image/jpeg', 'image/png'];
     const file = fileList[0];
 
+    console.log(file);
     // Return if the file is not allowed
-    if (!allowedTypes.includes(file.type)) {
+    if (!allowedTypes.includes(file.type) || file.size >= 3000000) {
       this.errorImage = true;
       this.imagenTmp = null;
       this.file = null;
@@ -144,6 +145,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
           this._router.navigateByUrl('/pets');
         },
         error: (error) => {
+          console.log(error);
           this.errorCreate = Array.isArray(error.error.message)
             ? error.error.message
             : [error.error.message];
