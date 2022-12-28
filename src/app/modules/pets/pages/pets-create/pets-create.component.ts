@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { PetService } from '../../services/pet.service';
 import { SpeciesService } from '../../services/species.service';
-import { HelpersService } from 'src/app/shared/services/helpers.service';
+import { HelpersService } from 'src/app/core/services/helpers.service';
 import { Specie } from '../../interfaces/specie-interface';
 
 @Component({
@@ -91,7 +91,6 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     const allowedTypes = ['image/jpeg', 'image/png'];
     const file = fileList[0];
 
-    console.log(file);
     // Return if the file is not allowed
     if (!allowedTypes.includes(file.type) || file.size >= 3000000) {
       this.errorImage = true;

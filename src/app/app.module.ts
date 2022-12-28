@@ -9,6 +9,8 @@ import { SharedModule } from './shared/shared.module';
 //Cambiar el locale de la app
 import localEsCl from '@angular/common/locales/es-CL';
 import { registerLocaleData } from '@angular/common';
+import { LayoutModule } from './layouts/layout.module';
+import { CoreModule } from './core/core.module';
 registerLocaleData(localEsCl);
 
 @NgModule({
@@ -18,6 +20,8 @@ registerLocaleData(localEsCl);
     AppRoutingModule,
     BrowserAnimationsModule,
     SharedModule,
+    CoreModule,
+    LayoutModule,
   ],
   providers: [{ provide: LOCALE_ID, useValue: 'es-CL' }],
   bootstrap: [AppComponent],
