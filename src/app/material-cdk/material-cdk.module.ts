@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatButtonModule } from '@angular/material/button';
 
 const declaration = [
   MatTableModule,
@@ -25,6 +26,7 @@ const declaration = [
   MatProgressBarModule,
   MatSelectModule,
   MatProgressSpinnerModule,
+  MatButtonModule,
 ];
 
 @NgModule({

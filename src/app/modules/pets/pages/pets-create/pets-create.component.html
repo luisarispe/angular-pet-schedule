@@ -7,12 +7,15 @@
     <div class="text-4xl font-extrabold tracking-tight">Mascota</div>
     <!-- Actions -->
     <!-- Add pet button -->
+
     <button
       (click)="redirectPets()"
-      class="bg-blue-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-blue-800"
+      class="mb-2"
+      color="primary"
+      mat-raised-button
     >
       <mat-icon>list_alt</mat-icon>
-      <span class="ml-2 mr-1">Mascotas</span>
+      Mascotas
     </button>
   </div>
   <!--Card Form-->
@@ -80,12 +83,12 @@
       <div class="flex flex-col items-center">
         <div>
           <button
+            color="accent"
             (click)="imageFileInput.click()"
-            class="bg-neutral-500 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-green-800"
             mat-flat-button
           >
             <mat-icon>image</mat-icon>
-            <span class="ml-2 mr-1">Imagen Mascota</span>
+            Imagen Mascota
           </button>
           <input
             hidden
@@ -107,7 +110,7 @@
         </ng-container>
         <div class="flex flex-col items-start p-5">
           <img
-            class="w-52"
+            class="w-52 h-52 object-scale-down"
             [src]="
               imagenTmp != null ? imagenTmp : 'assets/jpg/adjunt_image.jpg'
             "
@@ -125,28 +128,21 @@
       </ul>
     </div>
     <!--Actions-->
-    <div class="flex flex-row p-3 justify-end">
+    <div class="flex flex-row p-3 justify-end space-x-1">
       <button
-        class="bg-green-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-green-800"
         (click)="idPet ? update() : create()"
         [disabled]="createLoad"
         mat-flat-button
+        color="primary"
       >
-        <ng-container *ngIf="createLoad; else noLoad">
-          <mat-icon class="animate-spin text-white">sync</mat-icon>
-        </ng-container>
-        <ng-template #noLoad>
-          <mat-icon>save</mat-icon>
-        </ng-template>
-        <span class="ml-2 mr-1">Guardar</span>
+        <mat-icon [ngClass]="{ 'animate-spin': createLoad }">{{
+          createLoad ? "sync" : "save"
+        }}</mat-icon>
+        Guardar
       </button>
-      <button
-        (click)="clearForm()"
-        class="bg-amber-900 text-white border-2 rounded-xl flex flex-row p-2 hover:bg-amber-800"
-        mat-flat-button
-      >
+      <button (click)="clearForm()" mat-flat-button color="warn">
         <mat-icon>remove</mat-icon>
-        <span class="ml-2 mr-1">Limpiar</span>
+        Limpiar
       </button>
     </div>
     <!--End Actios-->
