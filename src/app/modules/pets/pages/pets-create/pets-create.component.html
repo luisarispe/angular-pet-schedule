@@ -1,152 +1,139 @@
-<div class="container m-auto">
-  <!-- Header -->
-  <div
-    class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-8 px-2 md:px-8"
-  >
-    <!-- Title -->
-    <div class="text-4xl font-extrabold tracking-tight">Mascota</div>
-    <!-- Actions -->
-    <!-- Add pet button -->
+<!-- Header -->
+<div
+  class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-8 px-2 md:px-8"
+>
+  <!-- Title -->
+  <div class="text-4xl font-extrabold tracking-tight">Mascota</div>
+  <!-- Actions -->
+  <!-- Add pet button -->
 
-    <button
-      (click)="redirectPets()"
-      class="mb-2"
-      color="primary"
-      mat-raised-button
-    >
-      <mat-icon>list_alt</mat-icon>
-      Mascotas
-    </button>
-  </div>
-  <!--Card Form-->
-  <div class="bg-white p-5 rounded-lg">
-    <!--Form-->
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      <form [formGroup]="petForm">
-        <div class="flex flex-col">
-          <mat-form-field>
-            <mat-label>Nombre</mat-label>
-            <input
-              matInput
-              [formControlName]="'name'"
-              placeholder="Ej. Boby"
-              maxlength="100"
-              autocomplete="off"
-            />
-            <mat-error *ngIf="petForm.get('name')?.hasError('required')">
-              El valor es requerido.
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Sexo</mat-label>
-            <mat-select [formControlName]="'sex'">
-              <mat-option value="hembra">Hembra</mat-option>
-              <mat-option value="macho">Macho</mat-option>
-            </mat-select>
-            <mat-error *ngIf="petForm.get('sex')?.hasError('required')">
-              El valor es requerido.
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Edad</mat-label>
-            <input
-              matInput
-              [formControlName]="'age'"
-              placeholder="Ej. 15"
-              maxlength="11"
-              type="number"
-              autocomplete="off"
-            />
-            <mat-error *ngIf="petForm.get('age')?.hasError('required')">
-              El valor es requerido.
-            </mat-error>
-          </mat-form-field>
-          <mat-form-field>
-            <mat-label>Especie</mat-label>
-            <mat-select [formControlName]="'idSpecies'">
-              <ng-container *ngIf="species$ | async as species">
-                <mat-option
-                  *ngFor="let specie of species"
-                  [value]="specie.id"
-                  >{{ specie.name | titlecase }}</mat-option
-                >
-              </ng-container>
-            </mat-select>
-            <mat-error *ngIf="petForm.get('idSpecies')?.hasError('required')">
-              El valor es requerido.
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <!--End col-->
-      </form>
-      <!--Imagen Load-->
-      <div class="flex flex-col items-center">
-        <div>
-          <button
-            color="accent"
-            (click)="imageFileInput.click()"
-            mat-flat-button
-          >
-            <mat-icon>image</mat-icon>
-            Imagen Mascota
-          </button>
+  <button
+    (click)="redirectPets()"
+    class="mb-2"
+    color="primary"
+    mat-raised-button
+  >
+    <mat-icon>list_alt</mat-icon>
+    Mascotas
+  </button>
+</div>
+<!--Card Form-->
+<div class="bg-white p-5 rounded-lg">
+  <!--Form-->
+  <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <form [formGroup]="petForm">
+      <div class="flex flex-col">
+        <mat-form-field>
+          <mat-label>Nombre</mat-label>
           <input
-            hidden
-            type="file"
-            [multiple]="false"
-            [accept]="'image/jpeg, image/png'"
-            (change)="uploadImage(imageFileInput.files!)"
-            #imageFileInput
+            matInput
+            [formControlName]="'name'"
+            placeholder="Ej. Boby"
+            maxlength="100"
+            autocomplete="off"
           />
-        </div>
-        <ng-container *ngIf="errorImage">
-          <span class="bg-red-700 text-white rounded-2xl p-3 mt-3">
-            Archivo no valido
-          </span>
-          <p class="mt-2 text-red-600">
-            La imagen debe ser de extensión jpg/png, ademas debe tener un peso
-            maximo de 3MB.
-          </p>
-        </ng-container>
-        <div class="flex flex-col items-start p-5">
-          <img
-            class="w-52 h-52 object-scale-down"
-            [src]="
-              imagenTmp != null ? imagenTmp : 'assets/jpg/adjunt_image.jpg'
-            "
+          <mat-error *ngIf="petForm.get('name')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Sexo</mat-label>
+          <mat-select [formControlName]="'sex'">
+            <mat-option value="hembra">Hembra</mat-option>
+            <mat-option value="macho">Macho</mat-option>
+          </mat-select>
+          <mat-error *ngIf="petForm.get('sex')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Edad</mat-label>
+          <input
+            matInput
+            [formControlName]="'age'"
+            placeholder="Ej. 15"
+            maxlength="11"
+            type="number"
+            autocomplete="off"
           />
-        </div>
+          <mat-error *ngIf="petForm.get('age')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Especie</mat-label>
+          <mat-select [formControlName]="'idSpecies'">
+            <ng-container *ngIf="species$ | async as species">
+              <mat-option *ngFor="let specie of species" [value]="specie.id">{{
+                specie.name | titlecase
+              }}</mat-option>
+            </ng-container>
+          </mat-select>
+          <mat-error *ngIf="petForm.get('idSpecies')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
       </div>
       <!--End col-->
+    </form>
+    <!--Imagen Load-->
+    <div class="flex flex-col items-center">
+      <div>
+        <button color="accent" (click)="imageFileInput.click()" mat-flat-button>
+          <mat-icon>image</mat-icon>
+          Imagen Mascota
+        </button>
+        <input
+          hidden
+          type="file"
+          [multiple]="false"
+          [accept]="'image/jpeg, image/png'"
+          (change)="uploadImage(imageFileInput.files!)"
+          #imageFileInput
+        />
+      </div>
+      <ng-container *ngIf="errorImage">
+        <span class="bg-red-700 text-white rounded-2xl p-3 mt-3">
+          Archivo no valido
+        </span>
+        <p class="mt-2 text-red-600">
+          La imagen debe ser de extensión jpg/png, ademas debe tener un peso
+          maximo de 3MB.
+        </p>
+      </ng-container>
+      <div class="flex flex-col items-start p-5">
+        <img
+          class="w-52 h-52 object-scale-down"
+          [src]="imagenTmp != null ? imagenTmp : 'assets/jpg/adjunt_image.jpg'"
+        />
+      </div>
     </div>
-    <!--End Grid-->
-    <div class="mt-2 text-red-600" *ngIf="errorCreate.length > 0">
-      <ul>
-        <li *ngFor="let error of errorCreate">
-          *{{ error | firstTitleUpper }}
-        </li>
-      </ul>
-    </div>
-    <!--Actions-->
-    <div class="flex flex-row p-3 justify-end space-x-1">
-      <button
-        (click)="idPet ? update() : create()"
-        [disabled]="createLoad"
-        mat-flat-button
-        color="primary"
-      >
-        <mat-icon [ngClass]="{ 'animate-spin': createLoad }">{{
-          createLoad ? "sync" : "save"
-        }}</mat-icon>
-        Guardar
-      </button>
-      <button (click)="clearForm()" mat-flat-button color="warn">
-        <mat-icon>remove</mat-icon>
-        Limpiar
-      </button>
-    </div>
-    <!--End Actios-->
+    <!--End col-->
   </div>
-  <!--End Card-->
+  <!--End Grid-->
+  <div class="mt-2 text-red-600" *ngIf="errorCreate.length > 0">
+    <ul>
+      <li *ngFor="let error of errorCreate">*{{ error | firstTitleUpper }}</li>
+    </ul>
+  </div>
+  <!--Actions-->
+  <div class="flex flex-row p-3 justify-end space-x-1">
+    <button
+      (click)="idPet ? update() : create()"
+      [disabled]="createLoad"
+      mat-flat-button
+      color="primary"
+    >
+      <mat-icon [ngClass]="{ 'animate-spin': createLoad }">{{
+        createLoad ? "sync" : "save"
+      }}</mat-icon>
+      Guardar
+    </button>
+    <button (click)="clearForm()" mat-flat-button color="warn">
+      <mat-icon>remove</mat-icon>
+      Limpiar
+    </button>
+  </div>
+  <!--End Actios-->
 </div>
-<!--End Container-->
+<!--End Card-->

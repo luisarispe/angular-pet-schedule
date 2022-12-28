@@ -1,7 +1,31 @@
-<div class="flex flex-col flex-auto min-w-0 w-full">
-  <app-header></app-header>
-  <div class="container m-auto mb-20">
-    <router-outlet></router-outlet>
-  </div>
-  <app-footer></app-footer>
+<div class="flex flex-col">
+  <mat-sidenav-container>
+    <!--Sidebar-->
+    <mat-sidenav
+      opened="true"
+      #sidenav
+      [mode]="mobileQuery.matches ? 'over' : 'side'"
+    >
+      <div class="flex flex-col items-center pt-10">
+        <h1>Bienvenido</h1>
+        <h1>Luis Arispe</h1>
+        <h1>Administrador</h1>
+        <mat-nav-list>
+          <a mat-list-item routerLink="/home">Home</a>
+          <a mat-list-item routerLink="/pets">Mascotas</a>
+          <a mat-list-item routerLink="/pets/create">Crear Mascota</a>
+        </mat-nav-list>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <!--Heander-->
+      <app-header [sideNav]="sidenav"></app-header>
+      <!--Content-->
+      <div class="container m-auto">
+        <router-outlet></router-outlet>
+      </div>
+      <!--Footer-->
+      <app-footer></app-footer>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
 </div>

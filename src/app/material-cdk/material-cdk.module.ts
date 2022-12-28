@@ -14,6 +14,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 
 const declaration = [
   MatTableModule,
@@ -27,6 +30,9 @@ const declaration = [
   MatSelectModule,
   MatProgressSpinnerModule,
   MatButtonModule,
+  MatMenuModule,
+  MatSidenavModule,
+  MatListModule,
 ];
 
 @NgModule({
