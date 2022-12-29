@@ -5,12 +5,13 @@
     <button mat-icon-button (click)="sidenav!.toggle()">
       <mat-icon>list</mat-icon>
     </button>
-    <h2 class="text-lg p-2 m-2 bg-blue-600 text-white rounded-md">
-      Pet-Schedule
-    </h2>
   </div>
-  <button mat-icon-button [matMenuTriggerFor]="menu" class="mr-5">
-    <mat-icon color="primary">account_circle</mat-icon>
+  <button
+    mat-icon-button
+    [matMenuTriggerFor]="menu"
+    class="mr-5 flex flex-col items-center justify-center"
+  >
+    <mat-icon color="primary" class="mat-icon-35 mt-2">account_circle</mat-icon>
   </button>
 </div>
 

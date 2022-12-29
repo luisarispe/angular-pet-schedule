@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  base_url: 'http://localhost:3000/',
-  // base_url: 'https://api.petschedule.luisarispe.com/',
+  // base_url: 'http://localhost:3000/',
+  base_url: 'https://api.petschedule.luisarispe.com/',
 };
 /*
  * For easier debugging in development mode, you can import the following file
