@@ -10,11 +10,11 @@
     <h1 class="text-xl font-medium">Luis Arispe</h1>
   </div>
   <!--List Menu-->
-  <ul class="flex flex-col space-y-4">
+  <ul class="flex flex-col space-y-1">
     <li>
       <a
         routerLink="/home"
-        class="flex items-center space-x-2 p-2"
+        class="flex items-center space-x-2 p-2 hover:bg-teal-100 hover:rounded-2xl"
         routerLinkActive="bg-teal-100  rounded-2xl"
         [routerLinkActiveOptions]="{ exact: true }"
       >
@@ -26,38 +26,43 @@
     </li>
     <li>
       <a
-        routerLink="/pets"
-        class="flex items-center space-x-2 p-2"
-        routerLinkActive="bg-teal-100  rounded-2xl"
-        [routerLinkActiveOptions]="{ exact: true }"
+        class="flex items-center space-x-2 p-2 cursor-pointer hover:bg-teal-100 hover:rounded-2xl"
+        (click)="changeSubMenu()"
       >
         <div class="bg-teal-200 p-2 rounded-lg flex items-center">
           <mat-icon color="primary">cruelty_free</mat-icon>
         </div>
         <span class="text-teal-600">Mascotas</span>
+        <mat-icon class="text-teal-500">{{
+          hiddenSubM ? "expand_more" : "navigate_next"
+        }}</mat-icon>
       </a>
-    </li>
-    <li>
-      <a
-        routerLink="/pets/create"
-        class="flex items-center space-x-2 p-2"
-        routerLinkActive="bg-teal-100  rounded-2xl"
-        [routerLinkActiveOptions]="{ exact: true }"
+      <ul
+        [ngClass]="hiddenSubM ? 'flex' : 'hidden'"
+        class="flex-col items-start ml-5 text-teal-500 text-sm"
       >
-        <div class="bg-teal-200 p-2 rounded-lg flex items-center">
-          <mat-icon color="primary">add_circle_outline</mat-icon>
-        </div>
-        <span class="text-teal-600">Agregar Mascota</span>
-      </a>
-    </li>
-    <li>
-      <a class="flex items-center space-x-2 p-2">
-        <div class="bg-teal-200 p-2 rounded-lg flex items-center">
-          <mat-icon color="primary">cruelty_free</mat-icon>
-        </div>
-        <span class="text-teal-600">Mascotas</span>
-        <mat-icon class="text-teal-500">navigate_next</mat-icon>
-      </a>
+        <li class="w-full">
+          <a
+            class="flex items-center space-x-3 p-2 hover:bg-teal-100 hover:rounded-2xl"
+            routerLink="/pets"
+            routerLinkActive="bg-teal-100  rounded-2xl"
+            [routerLinkActiveOptions]="{ exact: true }"
+            ><mat-icon>radio_button_unchecked</mat-icon>
+            <span>Lista Mascotas</span>
+          </a>
+        </li>
+        <li class="w-full">
+          <a
+            class="flex items-center space-x-3 p-2 hover:bg-teal-100 hover:rounded-2xl"
+            routerLink="/pets/create"
+            routerLinkActive="bg-teal-100  rounded-2xl"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <mat-icon>radio_button_unchecked</mat-icon>
+            <span>Agregar Mascota</span>
+          </a>
+        </li>
+      </ul>
     </li>
   </ul>
   <!-- <mat-nav-list>
