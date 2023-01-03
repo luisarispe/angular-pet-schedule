@@ -2,15 +2,15 @@
   <mat-sidenav-container>
     <!--Sidebar-->
     <mat-sidenav
-      opened="true"
-      #sidenav
+      #sideNav
+      [opened]="mobileQuery.matches ? false : true"
       [mode]="mobileQuery.matches ? 'over' : 'side'"
     >
       <app-sidebar></app-sidebar>
     </mat-sidenav>
     <mat-sidenav-content>
       <!--Heander-->
-      <app-header [sideNav]="sidenav"></app-header>
+      <app-header></app-header>
       <!--Content-->
       <div class="container m-auto">
         <router-outlet></router-outlet>

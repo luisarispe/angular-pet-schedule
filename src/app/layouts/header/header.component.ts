@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
+import { SideBarService } from 'src/app/core/services/side-bar.service';
 
 @Component({
   selector: 'app-header',
@@ -7,6 +8,9 @@ import { MatSidenav } from '@angular/material/sidenav';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent {
-  @Input('sideNav') sidenav!: MatSidenav;
-  constructor() {}
+  constructor(private _sidebarService: SideBarService) {}
+
+  toggleSideBar() {
+    this._sidebarService.toggleSideBar();
+  }
 }

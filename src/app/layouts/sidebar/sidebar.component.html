@@ -10,64 +10,9 @@
     <h1 class="text-xl font-medium">Luis Arispe</h1>
   </div>
   <!--List Menu-->
-  <ul class="flex flex-col space-y-1">
-    <li>
-      <a
-        routerLink="/home"
-        class="flex items-center space-x-2 p-2 hover:bg-teal-100 hover:rounded-2xl"
-        routerLinkActive="bg-teal-100  rounded-2xl"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <div class="bg-teal-200 p-2 rounded-lg flex items-center">
-          <mat-icon color="primary">home</mat-icon>
-        </div>
-        <span class="text-teal-600">Inicio</span>
-      </a>
-    </li>
-    <li>
-      <a
-        class="flex items-center space-x-2 p-2 cursor-pointer hover:bg-teal-100 hover:rounded-2xl"
-        (click)="changeSubMenu()"
-      >
-        <div class="bg-teal-200 p-2 rounded-lg flex items-center">
-          <mat-icon color="primary">cruelty_free</mat-icon>
-        </div>
-        <span class="text-teal-600">Mascotas</span>
-        <mat-icon class="text-teal-500">{{
-          hiddenSubM ? "expand_more" : "navigate_next"
-        }}</mat-icon>
-      </a>
-      <ul
-        [ngClass]="hiddenSubM ? 'flex' : 'hidden'"
-        class="flex-col items-start ml-5 text-teal-500 text-sm"
-      >
-        <li class="w-full">
-          <a
-            class="flex items-center space-x-3 p-2 hover:bg-teal-100 hover:rounded-2xl"
-            routerLink="/pets"
-            routerLinkActive="bg-teal-100  rounded-2xl"
-            [routerLinkActiveOptions]="{ exact: true }"
-            ><mat-icon>radio_button_unchecked</mat-icon>
-            <span>Lista Mascotas</span>
-          </a>
-        </li>
-        <li class="w-full">
-          <a
-            class="flex items-center space-x-3 p-2 hover:bg-teal-100 hover:rounded-2xl"
-            routerLink="/pets/create"
-            routerLinkActive="bg-teal-100  rounded-2xl"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <mat-icon>radio_button_unchecked</mat-icon>
-            <span>Agregar Mascota</span>
-          </a>
-        </li>
-      </ul>
-    </li>
-  </ul>
-  <!-- <mat-nav-list>
-    <a mat-list-item routerLink="/home">Home</a>
-    <a mat-list-item routerLink="/pets">Mascotas</a>
-    <a mat-list-item routerLink="/pets/create">Crear Mascota</a>
-  </mat-nav-list> -->
+  <div class="flex flex-col space-y-2">
+    <ng-container *ngFor="let route of routes">
+      <app-menu [menu]="route"></app-menu>
+    </ng-container>
+  </div>
 </div>
