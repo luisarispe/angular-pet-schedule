@@ -4,6 +4,11 @@ import { LayoutComponent } from './layouts/layouts.component';
 
 const routes: Route[] = [
   {
+    path: 'auth',
+    loadChildren: () =>
+      import('./modules/auth/auth.module').then((m) => m.AuthModule),
+  },
+  {
     path: '',
     component: LayoutComponent,
     children: [
@@ -22,11 +27,11 @@ const routes: Route[] = [
         loadChildren: () =>
           import('./modules/pets/pets.module').then((m) => m.PetsModule),
       },
-      {
-        path: '**',
-        redirectTo: '/home',
-      },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: '/home',
   },
 ];
 
