@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { LoaderInterceptor } from './interceptors/loader.interceptor';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SplashScreenService } from './services/splash-screen.service';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [],
@@ -11,6 +12,11 @@ import { SplashScreenService } from './services/splash-screen.service';
     {
       provide: HTTP_INTERCEPTORS,
       useClass: LoaderInterceptor,
+      multi: true,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
       multi: true,
     },
   ],

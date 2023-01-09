@@ -36,8 +36,8 @@ body splash-screen .spinner > div {
   background-color: #1e3a8a;
   border-radius: 100%;
   display: inline-block;
-  -webkit-animation: fuse-bouncedelay 1s infinite ease-in-out both;
-  animation: fuse-bouncedelay 1s infinite ease-in-out both;
+  -webkit-animation: bouncedelay 1s infinite ease-in-out both;
+  animation: bouncedelay 1s infinite ease-in-out both;
 }
 
 body splash-screen .spinner .bounce1 {
@@ -50,7 +50,7 @@ body splash-screen .spinner .bounce2 {
   animation-delay: -0.16s;
 }
 
-@-webkit-keyframes fuse-bouncedelay {
+@-webkit-keyframes bouncedelay {
   0%,
   80%,
   100% {
@@ -61,7 +61,7 @@ body splash-screen .spinner .bounce2 {
   }
 }
 
-@keyframes fuse-bouncedelay {
+@keyframes bouncedelay {
   0%,
   80%,
   100% {

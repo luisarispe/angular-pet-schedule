@@ -7,7 +7,9 @@
   <!--User-->
   <div class="flex flex-col items-center space-y-2">
     <h1 class="text-xl font-medium">Bienvenido!</h1>
-    <h1 class="text-xl font-medium">Luis Arispe</h1>
+    <div *ngIf="$user | async as user">
+      <h1 class="text-xl font-medium">{{ user.fullName | titlecase }}</h1>
+    </div>
   </div>
   <!--List Menu-->
   <div class="flex flex-col space-y-2">

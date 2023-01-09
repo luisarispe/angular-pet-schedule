@@ -9,7 +9,7 @@
     </div>
     <div>
       <!--Form-->
-      <form [formGroup]="signInForm" class="flex flex-col space-y-5 mt-10">
+      <form [formGroup]="signInForm" class="flex flex-col space-y-5 mt-10 mb-3">
         <mat-form-field>
           <mat-label>Email</mat-label>
           <input class="w-full" matInput formControlName="email" />
@@ -43,11 +43,20 @@
           </mat-error>
         </mat-form-field>
       </form>
+      <!--Message Error-->
+      <div class="mb-2 text-red-600" *ngIf="error.length > 0">
+        <ul>
+          <li *ngFor="let error of error">*{{ error | firstTitleUpper }}</li>
+        </ul>
+      </div>
       <button
-        (click)="onSignIn()"
+        (click)="signIn()"
+        [disabled]="load"
         class="bg-[#3f51b5] text-white rounded-lg p-2 hover:bg-blue-800 flex flex-row items-center justify-center space-x-2 w-full"
       >
-        <mat-icon>login</mat-icon>
+        <mat-icon [ngClass]="{ 'animate-spin': load }">{{
+          load ? "sync" : "login"
+        }}</mat-icon>
         <span>Ingresar</span>
       </button>
     </div>
