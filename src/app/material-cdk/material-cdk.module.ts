@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 const declaration = [
   MatTableModule,
@@ -33,6 +34,7 @@ const declaration = [
   MatMenuModule,
   MatSidenavModule,
   MatListModule,
+  MatAutocompleteModule,
 ];
 
 @NgModule({

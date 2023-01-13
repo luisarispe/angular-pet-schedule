@@ -2,15 +2,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Pet } from '../interfaces/pet-interface';
-import { PetForm } from '../interfaces/pet-form-interface';
+import { Pet } from '../interfaces/pet.interface';
+import { PetForm } from '../interfaces/pet-form.interface';
 
 const base_url = environment.base_url;
 
 @Injectable({
   providedIn: 'root',
 })
-export class PetService {
+export class PetsService {
   private _offset: number = 0;
   private _pets: BehaviorSubject<Pet[]> = new BehaviorSubject<Pet[]>([]);
   private _countPets: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -30,9 +30,9 @@ export class PetService {
     pageIndex: number = 0,
     pageSize: number = 5,
     sortDirection: string = 'asc',
-    sortActive: string = 'name',
+    sortActive: string = 'pet.name',
     filter: string = ''
-  ) {
+  ): Observable<{ count: number; pets: Pet[] }> {
     pageIndex == 0 ? (this._offset = 0) : (this._offset = pageIndex * pageSize);
 
     const params = new HttpParams()
@@ -53,7 +53,8 @@ export class PetService {
         }),
         catchError((_) => {
           this.pets = [];
-          return of();
+          this.countPets = 0;
+          return of({ count: 0, pets: [] });
         })
       );
   }

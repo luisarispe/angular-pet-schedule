@@ -40,12 +40,12 @@ export class SidebarComponent {
       icon: 'account_box',
       children: [
         {
-          route: '/propietarios',
+          route: '/owners',
           name: 'Lista',
           icon: 'radio_button_unchecked',
         },
         {
-          route: '/propietarios/create',
+          route: '/owners/create',
           name: 'Agregar',
           icon: 'radio_button_unchecked',
         },

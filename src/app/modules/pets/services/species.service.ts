@@ -10,7 +10,7 @@ import {
   delay,
 } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Specie } from '../interfaces/specie-interface';
+import { Specie } from '../interfaces/specie.interface';
 
 const base_url = environment.base_url;
 @Injectable({

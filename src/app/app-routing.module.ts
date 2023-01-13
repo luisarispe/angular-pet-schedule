@@ -31,6 +31,11 @@ const routes: Route[] = [
           import('./modules/pets/pets.module').then((m) => m.PetsModule),
       },
       {
+        path: 'owners',
+        loadChildren: () =>
+          import('./modules/owners/owners.module').then((m) => m.OwnersModule),
+      },
+      {
         path: 'profile',
         loadChildren: () =>
           import('./modules/profile/profile.module').then(

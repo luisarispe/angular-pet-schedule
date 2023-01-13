@@ -1,16 +1,16 @@
 import { DataSource } from '@angular/cdk/collections';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Pet } from '../interfaces/pet-interface';
-import { PetService } from './pet.service';
+import { OwnersService } from './owners.service';
+import { Owner } from '../interfaces/owner.interface';
 
 @Injectable()
-export class PetDataSourceService extends DataSource<Pet> {
-  constructor(private petService: PetService) {
+export class OwnersDataSourceService extends DataSource<Owner> {
+  constructor(private _ownersService: OwnersService) {
     super();
   }
-  connect(): Observable<Pet[]> {
-    return this.petService.pets$;
+  connect(): Observable<Owner[]> {
+    return this._ownersService.owners$;
   }
 
   disconnect(): void {}
@@ -18,10 +18,10 @@ export class PetDataSourceService extends DataSource<Pet> {
     pageIndex: number = 0,
     pageSize: number = 5,
     sortDirection: string = 'asc',
-    sortActive: string = 'pet.name',
+    sortActive: string = 'owner.fullName',
     filter: string = ''
   ): void {
-    this.petService
+    this._ownersService
       .findAll(pageIndex, pageSize, sortDirection, sortActive, filter)
       .subscribe();
   }

@@ -1,0 +1,139 @@
+<!-- Header -->
+<div
+  class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-8 px-2 md:px-8"
+>
+  <!-- Title -->
+  <div class="text-4xl font-extrabold tracking-tight">Propietario</div>
+  <!-- Actions -->
+  <!-- Add pet button -->
+
+  <button (click)="redirect()" class="mb-2" color="primary" mat-raised-button>
+    <mat-icon>list_alt</mat-icon>
+    Propietarios
+  </button>
+</div>
+<!--Card Form-->
+<div class="flex flex-row bg-white p-5 rounded-lg shadow-lg">
+  <div class="flex flex-col w-full">
+    <!--Form-->
+    <form [formGroup]="ownerForm">
+      <div class="flex flex-col">
+        <mat-form-field>
+          <mat-label>Nombre</mat-label>
+          <input
+            matInput
+            [formControlName]="'fullName'"
+            placeholder="Ej. Juan Perez"
+            maxlength="100"
+            autocomplete="off"
+          />
+          <mat-error *ngIf="ownerForm.get('fullName')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Rut</mat-label>
+          <input
+            matInput
+            [formControlName]="'rut'"
+            placeholder="Ej. 12345678-9"
+            maxlength="100"
+            autocomplete="off"
+          />
+          <mat-error *ngIf="ownerForm.get('rut')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            [formControlName]="'email'"
+            placeholder="Ej. test@test.com"
+            maxlength="100"
+            autocomplete="off"
+          />
+          <mat-error *ngIf="ownerForm.get('email')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+          <mat-error *ngIf="ownerForm.get('email')?.hasError('email')">
+            Email no es valido
+          </mat-error>
+        </mat-form-field>
+        <div class="flex flex-row space-x-2">
+          <mat-form-field class="w-1/3">
+            <mat-label>Código</mat-label>
+            <input
+              type="text"
+              placeholder="Código"
+              matInput
+              [formControlName]="'countryCallingCode'"
+              [matAutocomplete]="auto"
+            />
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option
+                *ngFor="let code of filteredOptions$ | async"
+                [value]="code.dial_code"
+                >{{ code.dial_code }} {{ code.emoji }}</mat-option
+              >
+            </mat-autocomplete>
+
+            <mat-error
+              *ngIf="ownerForm.get('countryCallingCode')?.hasError('required')"
+            >
+              El valor es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="w-2/3">
+            <mat-label>Celular</mat-label>
+            <input
+              matInput
+              type="number"
+              [formControlName]="'nationalNumber'"
+              placeholder="Ej. 999999999"
+              maxlength="100"
+              autocomplete="off"
+            />
+            <mat-error
+              *ngIf="ownerForm.get('nationalNumber')?.hasError('required')"
+            >
+              El valor es requerido.
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <!--End col-->
+    </form>
+    <!--Message error-->
+    <div class="mt-2 text-red-600" *ngIf="errorCreate.length > 0">
+      <ul>
+        <li *ngFor="let error of errorCreate">
+          *{{ error | firstTitleUpper }}
+        </li>
+      </ul>
+    </div>
+    <!--Actions-->
+    <div class="flex flex-row p-3 justify-end space-x-1">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="idOwner ? update() : create()"
+        [disabled]="createLoad"
+      >
+        <mat-icon [ngClass]="{ 'animate-spin': createLoad }">{{
+          createLoad ? "sync" : "save"
+        }}</mat-icon>
+        Guardar
+      </button>
+      <button mat-flat-button color="warn" (click)="clearForm()">
+        <mat-icon>remove</mat-icon>
+        Limpiar
+      </button>
+    </div>
+  </div>
+  <!--End col-->
+  <!--Image-->
+  <div class="items-center justify-center w-full hidden md:flex">
+    <img class="w-80" src="assets/svg/save.svg" />
+  </div>
+</div>

@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { SpeciesService } from './services/species.service';
-import { Specie } from './interfaces/specie-interface';
+import { Specie } from './interfaces/specie.interface';
 import { Observable } from 'rxjs';
 
 @Injectable({

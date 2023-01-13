@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
-import { PetService } from '../../services/pet.service';
+import { PetsService } from '../../services/pets.service';
 import { SpeciesService } from '../../services/species.service';
 import { HelpersService } from 'src/app/core/services/helpers.service';
-import { Specie } from '../../interfaces/specie-interface';
+import { Specie } from '../../interfaces/specie.interface';
 
 @Component({
   selector: 'app-pets-create',
@@ -33,7 +33,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     private _route: ActivatedRoute,
     private _router: Router,
     private _formbuild: FormBuilder,
-    private _petService: PetService,
+    private _petsService: PetsService,
     private _speciesService: SpeciesService,
     private _helperService: HelpersService
   ) {
@@ -53,7 +53,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
   }
 
   findOne(): void {
-    this._petService
+    this._petsService
       .findOne(this.idPet)
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
@@ -78,7 +78,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     this.errorCreate = [];
     this.petForm.reset();
   }
-  redirectPets(): void {
+  redirect(): void {
     this._router.navigateByUrl('/pets');
   }
 
@@ -113,13 +113,13 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
       return;
     }
     this.createLoad = true;
-    this._petService
+    this._petsService
       .create(this.petForm.value, this.file)
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
         next: (res) => {
           this.createLoad = false;
-          this._router.navigateByUrl('/pets');
+          this.redirect();
         },
         error: (error) => {
           this.errorCreate = Array.isArray(error.error.message)
@@ -135,7 +135,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
       return;
     }
     this.createLoad = true;
-    this._petService
+    this._petsService
       .update(this.petForm.value, this.idPet, this.file)
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
@@ -144,7 +144,6 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
           this._router.navigateByUrl('/pets');
         },
         error: (error) => {
-          console.log(error);
           this.errorCreate = Array.isArray(error.error.message)
             ? error.error.message
             : [error.error.message];

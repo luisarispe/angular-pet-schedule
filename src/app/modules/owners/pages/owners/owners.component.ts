@@ -21,38 +21,43 @@ import { MatSort } from '@angular/material/sort';
 import { Confirm } from 'notiflix/build/notiflix-confirm-aio';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-import { PetsDataSourceService } from '../../services/pets-data-source.service';
-import { PetsService } from '../../services/pets.service';
-import { Pet } from '../../interfaces/pet.interface';
+import { OwnersDataSourceService } from '../../services/owners-data-source.service';
+import { OwnersService } from '../../services/owners.service';
+import { Owner } from '../../interfaces/owner.interface';
 
 @Component({
-  selector: 'app-pets',
-  templateUrl: './pets.component.html',
-  styleUrls: ['./pets.component.css'],
+  selector: 'app-owners',
+  templateUrl: './owners.component.html',
+  styleUrls: ['./owners.component.css'],
 })
-export class PetsComponent implements OnInit, OnDestroy {
+export class OwnersComponent implements OnInit, OnDestroy {
   private _destroyed$ = new Subject();
-  countPets: number = 0;
+  countOwners: number = 0;
   displayedColumns: string[] = [
-    'pet.name',
-    'pet.sex',
-    'pet.age',
-    'species.name',
-    'pet.createdAt',
-    'pet.updatedAt',
+    'owner.fullName',
+    'owner.rut',
+    'owner.email',
+    'owner.phone',
+    'owner.createdAt',
+    'owner.updatedAt',
+    'user.fullName',
     'actions',
   ];
-  dataSource = new PetsDataSourceService(this._petsService);
+
+  dataSource = new OwnersDataSourceService(this._ownersService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('inputFilter') inputFilter: ElementRef = {} as ElementRef;
 
-  constructor(private _petsService: PetsService, private _router: Router) {
-    this._petsService.countPets$.pipe(takeUntil(this._destroyed$)).subscribe({
-      next: (count) => (this.countPets = count),
-      error: () => (this.countPets = 0),
-    });
+  constructor(private _ownersService: OwnersService, private _router: Router) {
+    this._ownersService.countOwners$
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe({
+        next: (count) => (this.countOwners = count),
+        error: () => (this.countOwners = 0),
+      });
   }
+
   ngOnInit(): void {
     this.dataSource.load();
   }
@@ -102,21 +107,24 @@ export class PetsComponent implements OnInit, OnDestroy {
   }
 
   redirectCreate(): void {
-    this._router.navigateByUrl('/pets/create');
+    this._router.navigateByUrl('/owners/create');
   }
+
   redirectUpdate(id: string): void {
-    this._router.navigate(['/pets/create'], { queryParams: { id } });
+    this._router.navigate(['/owners/create'], { queryParams: { id } });
   }
-  remove(pet: Pet) {
+
+  remove(owner: Owner) {
     Confirm.show(
       '',
-      `Está seguro de eliminar la mascota: "${pet.name}"?`,
+      `Está seguro de eliminar el propietario: "${owner.fullName}"?`,
       'Si',
       'No',
       () => {
-        this._petsService.remove(pet.id).subscribe({
+        this._ownersService.remove(owner.id).subscribe({
           complete: () => this.load(),
-          error: (error) => Notify.failure('No fue posible elimiar la mascota'),
+          error: (error) =>
+            Notify.failure('No fue posible elimiar el propietario'),
         });
       }
     );

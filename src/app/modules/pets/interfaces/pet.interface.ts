@@ -1,4 +1,4 @@
-import { Specie } from './specie-interface';
+import { Specie } from './specie.interface';
 
 export interface Pet {
   id: string;
