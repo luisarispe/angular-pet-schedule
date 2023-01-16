@@ -18,6 +18,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 const declaration = [
   MatTableModule,
@@ -35,6 +36,7 @@ const declaration = [
   MatSidenavModule,
   MatListModule,
   MatAutocompleteModule,
+  NgxMatSelectSearchModule,
 ];
 
 @NgModule({

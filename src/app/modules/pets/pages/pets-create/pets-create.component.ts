@@ -1,11 +1,24 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import {
+  Observable,
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  takeUntil,
+} from 'rxjs';
 import { PetsService } from '../../services/pets.service';
 import { SpeciesService } from '../../services/species.service';
 import { HelpersService } from 'src/app/core/services/helpers.service';
 import { Specie } from '../../interfaces/specie.interface';
+import { Owner } from 'src/app/modules/owners/interfaces/owner.interface';
+import { OwnersService } from 'src/app/modules/owners/services/owners.service';
 
 @Component({
   selector: 'app-pets-create',
@@ -20,14 +33,16 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
   createLoad: boolean = false;
   errorCreate: string[] = [];
   private _destroyed$ = new Subject();
+  searchFilterCtrl: FormControl<string> = new FormControl<any>('');
   petForm: FormGroup = this._formbuild.group({
     name: ['', [Validators.required]],
     age: ['', [Validators.required]],
     idSpecies: ['', [Validators.required]],
     sex: ['', [Validators.required]],
+    idOwner: ['', [Validators.required]],
   });
-
   species$: Observable<Specie[]> = new Observable();
+  owners$: Observable<Owner[]> = new Observable<Owner[]>();
 
   constructor(
     private _route: ActivatedRoute,
@@ -35,9 +50,11 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     private _formbuild: FormBuilder,
     private _petsService: PetsService,
     private _speciesService: SpeciesService,
-    private _helperService: HelpersService
+    private _helperService: HelpersService,
+    private _ownersService: OwnersService
   ) {
     this.species$ = this._speciesService.species$;
+    this.owners$ = this._ownersService.owners$;
   }
 
   ngOnInit(): void {
@@ -45,6 +62,13 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     if (this.idPet) {
       this.findOne();
     }
+    this.searchFilterCtrl.valueChanges
+      .pipe(
+        takeUntil(this._destroyed$),
+        distinctUntilChanged(),
+        debounceTime(400)
+      )
+      .subscribe((search) => this.filterOwners(search));
   }
 
   ngOnDestroy(): void {
@@ -58,19 +82,20 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._destroyed$))
       .subscribe({
         next: (pet) => {
+          this.filterOwners(pet.owner.fullName);
           this.petForm.patchValue({
             name: pet.name,
             age: pet.age,
             idSpecies: pet.species.id,
             sex: pet.sex,
+            idOwner: pet.owner.id,
           });
           this.imagenTmp = pet.urlImage;
         },
-        error: (error) => {
-          this.idPet = null;
-        },
+        error: (error) => (this.idPet = null),
       });
   }
+
   clearForm(): void {
     this.imagenTmp = null;
     this.file = null;
@@ -78,12 +103,12 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     this.errorCreate = [];
     this.petForm.reset();
   }
+
   redirect(): void {
     this._router.navigateByUrl('/pets');
   }
 
   uploadImage(fileList: FileList): void {
-    // Return if canceled
     if (!fileList.length) {
       return;
     }
@@ -91,7 +116,6 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     const allowedTypes = ['image/jpeg', 'image/png'];
     const file = fileList[0];
 
-    // Return if the file is not allowed
     if (!allowedTypes.includes(file.type) || file.size >= 3000000) {
       this.errorImage = true;
       this.imagenTmp = null;
@@ -100,7 +124,6 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     }
 
     this._helperService.readAsDataURL(file).then((data) => {
-      // Update the image
       this.errorImage = false;
       this.imagenTmp = data;
       this.file = fileList[0];
@@ -129,6 +152,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
         },
       });
   }
+
   update() {
     if (this.petForm.invalid) {
       this.petForm.markAllAsTouched();
@@ -150,5 +174,13 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
           this.createLoad = false;
         },
       });
+  }
+
+  filterOwners(value: string) {
+    if (value.length < 1) return;
+    this._ownersService
+      .findAll(0, 5, 'asc', 'owner.fullName', value.toLocaleLowerCase())
+      .pipe(takeUntil(this._destroyed$))
+      .subscribe();
   }
 }

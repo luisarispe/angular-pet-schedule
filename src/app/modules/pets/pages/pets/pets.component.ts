@@ -38,8 +38,10 @@ export class PetsComponent implements OnInit, OnDestroy {
     'pet.sex',
     'pet.age',
     'species.name',
+    'owner.fullName',
     'pet.createdAt',
     'pet.updatedAt',
+    'user.fullName',
     'actions',
   ];
   dataSource = new PetsDataSourceService(this._petsService);

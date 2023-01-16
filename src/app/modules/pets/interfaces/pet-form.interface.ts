@@ -3,4 +3,5 @@ export interface PetForm {
   sex: string;
   age: number;
   idSpecies: number;
+  idOwner: string;
 }

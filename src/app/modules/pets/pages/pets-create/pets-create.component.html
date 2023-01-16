@@ -68,6 +68,27 @@
             El valor es requerido.
           </mat-error>
         </mat-form-field>
+        <mat-form-field>
+          <mat-label>Propietario</mat-label>
+          <mat-select [formControlName]="'idOwner'" placeholder="Propietario">
+            <mat-option>
+              <ngx-mat-select-search
+                [formControl]="searchFilterCtrl"
+                placeholderLabel="Buscar"
+                noEntriesFoundLabel="No se encontraron resultados"
+              ></ngx-mat-select-search>
+            </mat-option>
+            <mat-option
+              *ngFor="let owner of owners$ | async"
+              [value]="owner.id"
+            >
+              {{ owner.rut }}-{{ owner.fullName | titlecase }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="petForm.get('idOwner')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
       </div>
       <!--End col-->
     </form>

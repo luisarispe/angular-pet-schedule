@@ -22,6 +22,7 @@ export class PetsService {
   set pets(value: Pet[]) {
     this._pets.next(value);
   }
+
   set countPets(value: number) {
     this._countPets.next(value);
   }
@@ -58,6 +59,7 @@ export class PetsService {
         })
       );
   }
+
   create(petForm: PetForm, file?: File | null): Observable<Pet> {
     const formData = new FormData();
 
@@ -65,12 +67,15 @@ export class PetsService {
     formData.append('age', petForm.age.toString());
     formData.append('idSpecies', petForm.idSpecies.toString());
     formData.append('sex', petForm.sex);
+    formData.append('idOwner', petForm.idOwner);
+
     if (file) {
       formData.append('file', file);
     }
 
     return this._http.post<Pet>(`${base_url}api/pets`, formData);
   }
+
   update(petForm: PetForm, id: string, file?: File | null) {
     const formData = new FormData();
 
@@ -78,15 +83,19 @@ export class PetsService {
     formData.append('age', petForm.age.toString());
     formData.append('idSpecies', petForm.idSpecies.toString());
     formData.append('sex', petForm.sex);
+    formData.append('idOwner', petForm.idOwner);
+
     if (file) {
       formData.append('file', file);
     }
 
     return this._http.patch<Pet>(`${base_url}api/pets/${id}`, formData);
   }
+
   findOne(id: string): Observable<Pet> {
     return this._http.get<Pet>(`${base_url}api/pets/${id}`);
   }
+
   remove(id: string): Observable<Pet> {
     return this._http.delete<Pet>(`${base_url}api/pets/${id}`);
   }
