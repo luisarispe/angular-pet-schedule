@@ -19,8 +19,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import {
+  NgxMatDatetimePickerModule,
+  NgxMatTimepickerModule,
+  NgxMatNativeDateModule,
+} from '@angular-material-components/datetime-picker';
 
 const declaration = [
+  MatDatepickerModule,
   MatTableModule,
   MatNativeDateModule,
   MatPaginatorModule,
@@ -37,6 +44,9 @@ const declaration = [
   MatListModule,
   MatAutocompleteModule,
   NgxMatSelectSearchModule,
+  NgxMatDatetimePickerModule,
+  NgxMatTimepickerModule,
+  NgxMatNativeDateModule,
 ];
 
 @NgModule({

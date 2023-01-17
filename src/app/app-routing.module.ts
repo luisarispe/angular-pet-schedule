@@ -42,6 +42,13 @@ const routes: Route[] = [
             (m) => m.ProfileModule
           ),
       },
+      {
+        path: 'schedules',
+        loadChildren: () =>
+          import('./modules/schedules/schedules.module').then(
+            (m) => m.SchedulesModule
+          ),
+      },
     ],
   },
   {

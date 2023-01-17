@@ -51,6 +51,12 @@ export class SidebarComponent {
         },
       ],
     },
+    {
+      route: '/schedules',
+      name: 'Agendas',
+      icon: 'calendar_today',
+      children: [],
+    },
   ];
 
   $user: Observable<User> = new Observable<User>();
