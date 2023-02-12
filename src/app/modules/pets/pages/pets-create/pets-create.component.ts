@@ -14,11 +14,12 @@ import {
   takeUntil,
 } from 'rxjs';
 import { PetsService } from '../../services/pets.service';
-import { SpeciesService } from '../../services/species.service';
 import { HelpersService } from 'src/app/core/services/helpers.service';
 import { Specie } from '../../interfaces/specie.interface';
 import { Owner } from 'src/app/modules/owners/interfaces/owner.interface';
 import { OwnersService } from 'src/app/modules/owners/services/owners.service';
+import { Select } from '@ngxs/store';
+import { SpeciesSelector } from 'src/app/store/species/species.selector';
 
 @Component({
   selector: 'app-pets-create',
@@ -41,7 +42,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     sex: ['', [Validators.required]],
     idOwner: ['', [Validators.required]],
   });
-  species$: Observable<Specie[]> = new Observable();
+  @Select(SpeciesSelector.getSpecies) species$!: Observable<Specie[]>;
   owners$: Observable<Owner[]> = new Observable<Owner[]>();
 
   constructor(
@@ -49,11 +50,9 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _formbuild: FormBuilder,
     private _petsService: PetsService,
-    private _speciesService: SpeciesService,
     private _helperService: HelpersService,
     private _ownersService: OwnersService
   ) {
-    this.species$ = this._speciesService.species$;
     this.owners$ = this._ownersService.owners$;
   }
 

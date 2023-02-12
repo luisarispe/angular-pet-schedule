@@ -1,40 +1,28 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  pipe,
-  tap,
-  catchError,
-  of,
-  delay,
-} from 'rxjs';
+import { Observable, pipe, tap, catchError, of, delay } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Specie } from '../interfaces/specie.interface';
+import { Store } from '@ngxs/store';
+import {
+  AddSpecies,
+  RemoveSpecies,
+} from 'src/app/store/species/species.actions';
 
 const base_url = environment.base_url;
 @Injectable({
   providedIn: 'root',
 })
 export class SpeciesService {
-  private _species: BehaviorSubject<Specie[]> = new BehaviorSubject<Specie[]>(
-    []
-  );
-  public species$: Observable<Specie[]> = this._species.asObservable();
-
-  constructor(private _http: HttpClient) {}
-
-  set species(value: Specie[]) {
-    this._species.next(value);
-  }
+  constructor(private _http: HttpClient, private _store: Store) {}
 
   getAll(): Observable<Specie[]> {
     return this._http.get<Specie[]>(`${base_url}api/species`).pipe(
       tap((species: Specie[]) => {
-        this.species = species;
+        this._store.dispatch(new AddSpecies(species));
       }),
       catchError(() => {
-        this.species = [];
+        this._store.dispatch(new RemoveSpecies());
         return of([]);
       })
     );
