@@ -17,7 +17,13 @@ import localEsCl from '@angular/common/locales/es-CL';
 import { registerLocaleData } from '@angular/common';
 import { LayoutModule } from './layouts/layout.module';
 import { CoreModule } from './core/core.module';
+
+//STATE
 import { SpeciesState } from './store/species/species.state';
+import { OwnersState } from './store/owners/owners.state';
+import { PetsState } from './store/pets/pets.state';
+import { UserState } from './store/user/user.state';
+import { LoaderState } from './store/loader/loader.state';
 registerLocaleData(localEsCl);
 
 @NgModule({
@@ -29,9 +35,12 @@ registerLocaleData(localEsCl);
     SharedModule,
     CoreModule,
     LayoutModule,
-    NgxsModule.forRoot([SpeciesState], {
-      developmentMode: !environment.production,
-    }),
+    NgxsModule.forRoot(
+      [SpeciesState, OwnersState, PetsState, UserState, LoaderState],
+      {
+        developmentMode: !environment.production,
+      }
+    ),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: environment.production,
     }),

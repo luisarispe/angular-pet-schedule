@@ -4,6 +4,8 @@ import { BehaviorSubject, Observable, catchError, of, tap } from 'rxjs';
 import { Owner } from '../interfaces/owner.interface';
 import { environment } from '../../../../environments/environment';
 import { OwnerForm } from '../interfaces/owner-form.interface';
+import { Store } from '@ngxs/store';
+import { AddOwners } from 'src/app/store/owners/owners.actions';
 
 const base_url = environment.base_url;
 
@@ -11,23 +13,9 @@ const base_url = environment.base_url;
   providedIn: 'root',
 })
 export class OwnersService {
-  private _owners: BehaviorSubject<Owner[]> = new BehaviorSubject<Owner[]>([]);
-  public owners$: Observable<Owner[]> = this._owners.asObservable();
   private _offset: number = 0;
-  private _countOwners: BehaviorSubject<number> = new BehaviorSubject<number>(
-    0
-  );
-  public countOwners$: Observable<number> = this._countOwners.asObservable();
 
-  constructor(private _http: HttpClient) {}
-
-  set owners(value: Owner[]) {
-    this._owners.next(value);
-  }
-
-  set countOwners(value: number) {
-    this._countOwners.next(value);
-  }
+  constructor(private _http: HttpClient, private _store: Store) {}
 
   findAll(
     pageIndex: number = 0,
@@ -51,12 +39,12 @@ export class OwnersService {
       })
       .pipe(
         tap((resp: { count: number; owners: Owner[] }) => {
-          this.owners = resp.owners;
-          this.countOwners = resp.count;
+          this._store.dispatch(
+            new AddOwners({ owners: resp.owners, count: resp.count })
+          );
         }),
         catchError((_) => {
-          this.owners = [];
-          this.countOwners = 0;
+          this._store.dispatch(new AddOwners({ owners: [], count: 0 }));
           return of({ count: 0, owners: [] });
         })
       );

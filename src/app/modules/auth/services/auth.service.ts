@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { SignInForm } from '../interfaces/sign-in-form.interface';
 import { environment } from 'src/environments/environment';
-import { map, switchMap, tap, Observable, of, catchError } from 'rxjs';
+import { map, switchMap, Observable, of } from 'rxjs';
 import { User } from '../../../core/interfaces/user.interface';
-import { UserService } from 'src/app/core/services/user.service';
+import { Store } from '@ngxs/store';
+import { AddUser } from '../../../store/user/user.actios';
 
 const base_url = environment.base_url;
 
@@ -14,7 +15,7 @@ const base_url = environment.base_url;
 export class AuthService {
   private _authenticated: boolean = false;
 
-  constructor(private _http: HttpClient, private _userService: UserService) {}
+  constructor(private _http: HttpClient, private _store: Store) {}
 
   set accessToken(token: string) {
     localStorage.setItem('accessToken', token);
@@ -34,7 +35,7 @@ export class AuthService {
         map((resp) => {
           this.accessToken = resp.token;
           this._authenticated = true;
-          this._userService.user = resp.user;
+          this._store.dispatch(new AddUser(resp.user));
           return resp;
         })
       );
@@ -48,7 +49,7 @@ export class AuthService {
         } else {
           this.accessToken = resp.token;
           this._authenticated = true;
-          this._userService.user = resp.user;
+          this._store.dispatch(new AddUser(resp.user));
           return of(true);
         }
       })

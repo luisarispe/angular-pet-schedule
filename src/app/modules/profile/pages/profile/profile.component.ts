@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
+import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { User } from 'src/app/core/interfaces/user.interface';
-import { UserService } from 'src/app/core/services/user.service';
+import { UserSelector } from 'src/app/store/user/user.selector';
 
 @Component({
   selector: 'app-profile',
@@ -9,8 +10,5 @@ import { UserService } from 'src/app/core/services/user.service';
   styleUrls: ['./profile.component.css'],
 })
 export class ProfileComponent {
-  $user: Observable<User> = new Observable<User>();
-  constructor(private _userService: UserService) {
-    this.$user = this._userService.user$;
-  }
+  @Select(UserSelector.getUser) $user!: Observable<User>;
 }

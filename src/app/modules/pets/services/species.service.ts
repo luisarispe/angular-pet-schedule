@@ -4,10 +4,7 @@ import { Observable, pipe, tap, catchError, of, delay } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Specie } from '../interfaces/specie.interface';
 import { Store } from '@ngxs/store';
-import {
-  AddSpecies,
-  RemoveSpecies,
-} from 'src/app/store/species/species.actions';
+import { AddSpecies } from 'src/app/store/species/species.actions';
 
 const base_url = environment.base_url;
 @Injectable({
@@ -22,7 +19,7 @@ export class SpeciesService {
         this._store.dispatch(new AddSpecies(species));
       }),
       catchError(() => {
-        this._store.dispatch(new RemoveSpecies());
+        this._store.dispatch(new AddSpecies([]));
         return of([]);
       })
     );

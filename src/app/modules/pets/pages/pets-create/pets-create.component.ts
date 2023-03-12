@@ -18,8 +18,10 @@ import { HelpersService } from 'src/app/core/services/helpers.service';
 import { Specie } from '../../interfaces/specie.interface';
 import { Owner } from 'src/app/modules/owners/interfaces/owner.interface';
 import { OwnersService } from 'src/app/modules/owners/services/owners.service';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { SpeciesSelector } from 'src/app/store/species/species.selector';
+import { OwnersSelector } from 'src/app/store/owners/owners.selector';
+import { AddOwners } from 'src/app/store/owners/owners.actions';
 
 @Component({
   selector: 'app-pets-create',
@@ -43,7 +45,7 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     idOwner: ['', [Validators.required]],
   });
   @Select(SpeciesSelector.getSpecies) species$!: Observable<Specie[]>;
-  owners$: Observable<Owner[]> = new Observable<Owner[]>();
+  @Select(OwnersSelector.getOwners) owners$!: Observable<Owner[]>;
 
   constructor(
     private _route: ActivatedRoute,
@@ -51,12 +53,12 @@ export class PetsCreateComponent implements OnInit, OnDestroy {
     private _formbuild: FormBuilder,
     private _petsService: PetsService,
     private _helperService: HelpersService,
-    private _ownersService: OwnersService
-  ) {
-    this.owners$ = this._ownersService.owners$;
-  }
+    private _ownersService: OwnersService,
+    private _store: Store
+  ) {}
 
   ngOnInit(): void {
+    this._store.dispatch(new AddOwners({ owners: [], count: 0 }));
     this.idPet = this._route.snapshot.queryParamMap.get('id');
     if (this.idPet) {
       this.findOne();

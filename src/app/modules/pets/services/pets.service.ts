@@ -1,9 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, delay, Observable, of, tap } from 'rxjs';
+import { catchError, delay, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Pet } from '../interfaces/pet.interface';
 import { PetForm } from '../interfaces/pet-form.interface';
+import { Store } from '@ngxs/store';
+import { AddPets } from 'src/app/store/pets/pets.actions';
 
 const base_url = environment.base_url;
 
@@ -12,20 +14,8 @@ const base_url = environment.base_url;
 })
 export class PetsService {
   private _offset: number = 0;
-  private _pets: BehaviorSubject<Pet[]> = new BehaviorSubject<Pet[]>([]);
-  private _countPets: BehaviorSubject<number> = new BehaviorSubject<number>(0);
-  public pets$: Observable<Pet[]> = this._pets.asObservable();
-  public countPets$: Observable<number> = this._countPets.asObservable();
 
-  constructor(private _http: HttpClient) {}
-
-  set pets(value: Pet[]) {
-    this._pets.next(value);
-  }
-
-  set countPets(value: number) {
-    this._countPets.next(value);
-  }
+  constructor(private _http: HttpClient, private _store: Store) {}
 
   findAll(
     pageIndex: number = 0,
@@ -49,12 +39,12 @@ export class PetsService {
       })
       .pipe(
         tap((resp: { count: number; pets: Pet[] }) => {
-          this.pets = resp.pets;
-          this.countPets = resp.count;
+          this._store.dispatch(
+            new AddPets({ pets: resp.pets, count: resp.count })
+          );
         }),
         catchError((_) => {
-          this.pets = [];
-          this.countPets = 0;
+          this._store.dispatch(new AddPets({ pets: [], count: 0 }));
           return of({ count: 0, pets: [] });
         })
       );

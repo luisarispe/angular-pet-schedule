@@ -92,7 +92,9 @@
   >
   </mwl-calendar-day-view>
 </div>
+<!--Create schedule-->
 <div class="flex flex-col p-8">
+  <!--Form schedule-->
   <form [formGroup]="scheduleForm" class="flex flex-col">
     <mat-form-field>
       <mat-label>Titulo</mat-label>
@@ -104,116 +106,50 @@
         autocomplete="off"
       />
     </mat-form-field>
-    <mat-form-field>
-      <input
-        matInput
-        [ngxMatDatetimePicker]="pickers"
-        placeholder="Choose a date"
-        formControlName="start"
-        readonly="true"
-      />
-      <mat-datepicker-toggle matSuffix [for]="pickers"></mat-datepicker-toggle>
-      <ngx-mat-datetime-picker
-        #picker
-        [showSpinners]="true"
-        [showSeconds]="false"
-        [touchUi]="false"
-        [color]="'primary'"
-        [enableMeridian]="true"
-        [disableMinute]="false"
-        [hideTime]="false"
-      >
-      </ngx-mat-datetime-picker>
-    </mat-form-field>
+    <div class="flex flex-row w-full space-x-2 items-center">
+      <mat-form-field appearance="fill" class="w-full">
+        <mat-label>Fecha</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          readonly="true"
+          formControlName="date"
+          placeholder="Ej. dd-mm-aaaa"
+        />
+        <mat-datepicker-toggle
+          matIconSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Inicio</mat-label>
+        <mat-select formControlName="start" placeholder="Inicio">
+          <mat-option value="12:00"> 12:00 am </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <span class="text-3xl">-</span>
+      <mat-form-field>
+        <mat-label>Fin</mat-label>
+        <mat-select formControlName="end" placeholder="Fin">
+          <mat-option value="13:00"> 13:00 am </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
   </form>
+  <!--End form schedule-->
+  <!--Actios form-->
+  <div class="flex flex-row justify-end">
+    <button
+      mat-raised-button
+      color="primary"
+      class="mt-4"
+      (click)="addSchedule()"
+    >
+      Agregar
+    </button>
+  </div>
 </div>
-<!-- <h3>
-  Edit events
-  <button class="btn btn-primary float-end" (click)="addEvent()">
-    Add new
-  </button>
-  <div class="clearfix"></div>
-</h3>
-
-<div class="table-responsive">
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Title</th>
-        <th>Primary color</th>
-        <th>Secondary + text color</th>
-        <th>Starts at</th>
-        <th>Ends at</th>
-        <th>Remove</th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <tr *ngFor="let event of events">
-        <td>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="event.title"
-            (keyup)="refresh.next()"
-          />
-        </td>
-        <td>
-          <input
-            type="color"
-            [(ngModel)]="event.color!.primary"
-            (change)="refresh.next()"
-          />
-        </td>
-        <td>
-          <input
-            type="color"
-            [(ngModel)]="event.color!.secondary"
-            (change)="refresh.next()"
-          />
-          <input
-            type="color"
-            [ngModel]="event.color!.secondaryText ?? '#1e90ff'"
-            (ngModelChange)="event.color!.secondaryText = $event"
-            (change)="refresh.next()"
-          />
-        </td> -->
-<!-- <td>
-          <input
-            class="form-control"
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="event.start"
-            (ngModelChange)="refresh.next()"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="true"
-            dateFormat="Y-m-dTH:i"
-            altFormat="F j, Y H:i"
-            placeholder="Not set"
-          />
-        </td>
-        <td>
-          <input
-            class="form-control"
-            type="text"
-            mwlFlatpickr
-            [(ngModel)]="event.end"
-            (ngModelChange)="refresh.next()"
-            [altInput]="true"
-            [convertModelValue]="true"
-            [enableTime]="true"
-            dateFormat="Y-m-dTH:i"
-            altFormat="F j, Y H:i"
-            placeholder="Not set"
-          />
-        </td> -->
-<!-- <td>
-          <button class="btn btn-danger" (click)="deleteEvent(event)">
-            Delete
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table> -->
-<!-- </div> -->
+<div>
+  {{ data | date : "medium" }}
+</div>

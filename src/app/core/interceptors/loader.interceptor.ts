@@ -6,21 +6,22 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { LoaderService } from '../../core/services/loader.service';
 import { finalize } from 'rxjs/operators';
+import { Store } from '@ngxs/store';
+import { ChangeLoader } from 'src/app/store/loader/loader.actions';
 
 @Injectable()
 export class LoaderInterceptor implements HttpInterceptor {
-  constructor(private _loaderService: LoaderService) {}
+  constructor(private _store: Store) {}
 
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    this._loaderService.show();
+    this._store.dispatch(new ChangeLoader(true));
 
     return next
       .handle(request)
-      .pipe(finalize(() => this._loaderService.hide()));
+      .pipe(finalize(() => this._store.dispatch(new ChangeLoader(false))));
   }
 }

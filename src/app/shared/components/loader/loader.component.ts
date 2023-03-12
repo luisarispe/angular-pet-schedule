@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { Subject } from 'rxjs';
-import { LoaderService } from '../../../core/services/loader.service';
+import { Observable } from 'rxjs';
+import { Select } from '@ngxs/store';
+import { LoaderSelector } from 'src/app/store/loader/loader.selector';
 
 @Component({
   selector: 'app-loader',
@@ -8,6 +9,6 @@ import { LoaderService } from '../../../core/services/loader.service';
   styleUrls: ['./loader.component.css'],
 })
 export class LoaderComponent {
-  isLoading: Subject<boolean> = this._loaderService.isLoading;
-  constructor(private _loaderService: LoaderService) {}
+  @Select(LoaderSelector.getLoader) isLoading!: Observable<boolean>;
+  constructor() {}
 }

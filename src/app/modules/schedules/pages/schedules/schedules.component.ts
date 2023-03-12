@@ -15,6 +15,7 @@ import {
   isSameMonth,
   addHours,
 } from 'date-fns';
+import { formatDate } from '@angular/common';
 
 const colors: Record<string, EventColor> = {
   red: {
@@ -59,14 +60,45 @@ export class SchedulesComponent {
 
   scheduleForm: FormGroup = this._formBuild.group({
     title: ['', [Validators.required]],
-    start: ['', [Validators.required]],
-    end: ['', [Validators.required]],
+    date: ['', [Validators.required]],
+    start: [null, [Validators.required]],
+    end: [null, [Validators.required]],
+  });
+  data: Date = new Date('2023-01-20T02:30:00.000Z');
+
+  public formGroup = new FormGroup({
+    date: new FormControl(null, [Validators.required]),
   });
 
-  @ViewChild('picker') pickers: any;
-  public dateControl = new FormControl(null);
-
   constructor(private _formBuild: FormBuilder) {}
+  addSchedule() {
+    if (this.scheduleForm.invalid) {
+      this.scheduleForm.markAllAsTouched();
+      return;
+    }
+    const { title, date, start, end } = this.scheduleForm.value;
+    const dates = formatDate(date, 'yyyy-MM-dd', 'en-US');
+    const dateStart = dates + ' ' + start + ':00';
+    const dateEnd = dates + ' ' + end + ':00';
+    this.events = [
+      ...this.events,
+      {
+        meta: {
+          id: 1,
+        },
+        id: this.events.length + 1,
+        title: title,
+        start: new Date(dateStart),
+        end: new Date(dateEnd),
+        color: colors['red'],
+        draggable: false,
+        resizable: {
+          beforeStart: true,
+          afterEnd: true,
+        },
+      },
+    ];
+  }
 
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {

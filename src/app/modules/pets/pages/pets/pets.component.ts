@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import {
+  Observable,
   Subject,
   debounceTime,
   distinctUntilChanged,
@@ -24,6 +25,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { PetsDataSourceService } from '../../services/pets-data-source.service';
 import { PetsService } from '../../services/pets.service';
 import { Pet } from '../../interfaces/pet.interface';
+import { Select } from '@ngxs/store';
+import { PetsSelector } from 'src/app/store/pets/pets.selector';
 
 @Component({
   selector: 'app-pets',
@@ -44,13 +47,14 @@ export class PetsComponent implements OnInit, OnDestroy {
     'user.fullName',
     'actions',
   ];
+  @Select(PetsSelector.countPets) countPets$!: Observable<number>;
   dataSource = new PetsDataSourceService(this._petsService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild('inputFilter') inputFilter: ElementRef = {} as ElementRef;
 
   constructor(private _petsService: PetsService, private _router: Router) {
-    this._petsService.countPets$.pipe(takeUntil(this._destroyed$)).subscribe({
+    this.countPets$.pipe(takeUntil(this._destroyed$)).subscribe({
       next: (count) => (this.countPets = count),
       error: () => (this.countPets = 0),
     });

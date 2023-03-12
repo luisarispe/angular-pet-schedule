@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { Router } from '@angular/router';
 import {
+  Observable,
   Subject,
   debounceTime,
   distinctUntilChanged,
@@ -24,6 +25,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { OwnersDataSourceService } from '../../services/owners-data-source.service';
 import { OwnersService } from '../../services/owners.service';
 import { Owner } from '../../interfaces/owner.interface';
+import { Select, Selector } from '@ngxs/store';
+import { OwnersSelector } from 'src/app/store/owners/owners.selector';
 
 @Component({
   selector: 'app-owners',
@@ -43,6 +46,7 @@ export class OwnersComponent implements OnInit, OnDestroy {
     'user.fullName',
     'actions',
   ];
+  @Select(OwnersSelector.countOwners) countOwners$!: Observable<number>;
 
   dataSource = new OwnersDataSourceService(this._ownersService);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -50,12 +54,10 @@ export class OwnersComponent implements OnInit, OnDestroy {
   @ViewChild('inputFilter') inputFilter: ElementRef = {} as ElementRef;
 
   constructor(private _ownersService: OwnersService, private _router: Router) {
-    this._ownersService.countOwners$
-      .pipe(takeUntil(this._destroyed$))
-      .subscribe({
-        next: (count) => (this.countOwners = count),
-        error: () => (this.countOwners = 0),
-      });
+    this.countOwners$.pipe(takeUntil(this._destroyed$)).subscribe({
+      next: (count) => (this.countOwners = count),
+      error: () => (this.countOwners = 0),
+    });
   }
 
   ngOnInit(): void {

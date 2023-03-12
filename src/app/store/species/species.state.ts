@@ -1,6 +1,6 @@
 import { State, Action, StateContext } from '@ngxs/store';
 import { SpeciesStateModel } from './species.model';
-import { AddSpecies, RemoveSpecies } from './species.actions';
+import { AddSpecies } from './species.actions';
 
 @State({
   name: 'species',
@@ -18,14 +18,6 @@ export class SpeciesState {
     const state = getState();
     patchState({
       species: payload,
-    });
-  }
-
-  // Eliminar todas las species
-  @Action(RemoveSpecies)
-  remove({ patchState }: StateContext<SpeciesStateModel>, {}: RemoveSpecies) {
-    patchState({
-      species: [],
     });
   }
 }
