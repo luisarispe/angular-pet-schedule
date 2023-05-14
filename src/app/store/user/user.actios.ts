@@ -4,12 +4,12 @@ export class AddUser {
   constructor(public payload: User) {}
 }
 
-export class ChangeAuthenticated {
-  static readonly type = '[Authenticated Change]';
-  constructor(public payload: boolean) {}
+export class AddToken {
+  static readonly type = '[User] Add token';
+  constructor(public token: string) {}
 }
 
-export class ChangeToken {
-  static readonly type = '[Token Change]';
-  constructor(public payload: string) {}
+export class SignOut {
+  static readonly type = '[User] SignOut';
+  constructor() {}
 }
