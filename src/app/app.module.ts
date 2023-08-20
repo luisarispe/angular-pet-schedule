@@ -24,6 +24,7 @@ import { OwnersState } from './store/owners/owners.state';
 import { PetsState } from './store/pets/pets.state';
 import { UserState } from './store/user/user.state';
 import { LoaderState } from './store/loader/loader.state';
+import { SchedulesState } from './store/schedules/schedules.state';
 registerLocaleData(localEsCl);
 
 @NgModule({
@@ -36,7 +37,14 @@ registerLocaleData(localEsCl);
     CoreModule,
     LayoutModule,
     NgxsModule.forRoot(
-      [SpeciesState, OwnersState, PetsState, UserState, LoaderState],
+      [
+        SpeciesState,
+        OwnersState,
+        PetsState,
+        UserState,
+        LoaderState,
+        SchedulesState,
+      ],
       {
         developmentMode: !environment.production,
       }

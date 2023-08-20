@@ -22,8 +22,6 @@ const userDefault: User = {
 })
 @Injectable()
 export class UserState {
-  constructor() {}
-
   @Action(AddUser)
   add(
     { getState, patchState }: StateContext<UserStateModel>,

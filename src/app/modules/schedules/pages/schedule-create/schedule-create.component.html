@@ -1,0 +1,171 @@
+<!-- Header -->
+<div
+  class="flex flex-col sm:flex-row sm:items-center sm:justify-between py-8 px-2 md:px-8"
+>
+  <!-- Title -->
+  <div class="text-4xl font-extrabold tracking-tight">Agenda</div>
+  <!-- Actions -->
+  <button (click)="redirect()" class="mb-2" color="primary" mat-raised-button>
+    <mat-icon>calendar_today</mat-icon>
+    Calendario
+  </button>
+</div>
+
+<!--Card Form-->
+<div class="flex flex-row bg-white p-5 rounded-lg shadow-lg">
+  <div class="flex flex-col w-full">
+    <!--Form-->
+    <form [formGroup]="scheduleForm" class="flex flex-col">
+      <mat-form-field>
+        <mat-label>Titulo</mat-label>
+        <input
+          matInput
+          formControlName="title"
+          placeholder="Ej. Asistir a la mascota"
+          maxlength="100"
+          autocomplete="off"
+        />
+        <mat-error *ngIf="scheduleForm.get('title')?.hasError('required')">
+          El valor es requerido.
+        </mat-error>
+      </mat-form-field>
+      <div class="flex flex-col md:flex-row w-full space-x-2 items-center">
+        <mat-form-field class="w-full">
+          <mat-label>Propietario</mat-label>
+          <mat-select
+            [formControlName]="'idOwner'"
+            placeholder="Propietario"
+            (selectionChange)="onOwnerChange($event)"
+          >
+            <mat-option>
+              <ngx-mat-select-search
+                [formControl]="searchFilterOwner"
+                placeholderLabel="Buscar"
+                noEntriesFoundLabel="No se encontraron resultados"
+              ></ngx-mat-select-search>
+            </mat-option>
+            <mat-option
+              *ngFor="let owner of owners$ | async"
+              [value]="owner.id"
+            >
+              {{ owner.rut }}-{{ owner.fullName | titlecase }}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="scheduleForm.get('idOwner')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>Mascota</mat-label>
+          <mat-select formControlName="idPet" placeholder="Mascota">
+            <mat-option *ngFor="let pet of pets$ | async" [value]="pet.id">{{
+              pet.name
+            }}</mat-option>
+          </mat-select>
+          <mat-error *ngIf="scheduleForm.get('idPet')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col md:flex-row w-full space-x-2 items-center">
+        <mat-form-field appearance="fill" class="w-full">
+          <mat-label>Fecha</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker"
+            readonly="true"
+            formControlName="date"
+            placeholder="Ej. dd-mm-aaaa"
+          />
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error *ngIf="scheduleForm.get('date')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="w-full">
+          <mat-label>Inicio</mat-label>
+          <mat-select
+            (selectionChange)="changeOurs($event.value, typeHour.HOUR_START)"
+            formControlName="start"
+            placeholder="Inicio"
+          >
+            <mat-option
+              *ngFor="let hour of hoursStart$ | async as hours"
+              [value]="hour.hourKey"
+              [disabled]="hour.disabled"
+              >{{ hour.HourValue }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="scheduleForm.get('start')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+        <span class="text-3xl md:flex hidden">-</span>
+        <mat-form-field class="w-full">
+          <mat-label>Fin</mat-label>
+          <mat-select
+            (selectionChange)="changeOurs($event.value, typeHour.HOUR_END)"
+            formControlName="end"
+            placeholder="Fin"
+          >
+            <mat-option
+              *ngFor="let hour of hoursEnd$ | async as hours"
+              [value]="hour.hourKey"
+              [disabled]="hour.disabled"
+              >{{ hour.HourValue }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="scheduleForm.get('end')?.hasError('required')">
+            El valor es requerido.
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <mat-form-field class="w-full">
+        <mat-label>Estado</mat-label>
+        <mat-select formControlName="status" placeholder="Fin">
+          <mat-option value="pendiente">Pediente</mat-option>
+          <mat-option value="realizado">Realizado</mat-option>
+          <mat-option value="cancelado">Cancelado</mat-option>
+        </mat-select>
+        <mat-error *ngIf="scheduleForm.get('status')?.hasError('required')">
+          El valor es requerido.
+        </mat-error>
+      </mat-form-field>
+    </form>
+    <!--Message error-->
+    <div class="mt-2 text-red-600" *ngIf="errorCreate.length > 0">
+      <ul>
+        <li *ngFor="let error of errorCreate">
+          *{{ error | firstTitleUpper }}
+        </li>
+      </ul>
+    </div>
+    <!--Actions-->
+    <div class="flex flex-row p-3 justify-end space-x-1">
+      <button
+        mat-flat-button
+        color="primary"
+        (click)="idSchedule ? update() : create()"
+        [disabled]="createLoad"
+      >
+        <mat-icon [ngClass]="{ 'animate-spin': createLoad }">{{
+          createLoad ? "sync" : "save"
+        }}</mat-icon>
+        Guardar
+      </button>
+      <button mat-flat-button color="warn" (click)="clearForm()">
+        <mat-icon>remove</mat-icon>
+        Limpiar
+      </button>
+    </div>
+  </div>
+  <!--End col-->
+  <!--Image-->
+  <div class="items-center justify-center w-full hidden md:flex">
+    <img class="w-80" src="assets/svg/calendar_add.svg" />
+  </div>
+</div>

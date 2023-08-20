@@ -1,3 +1,15 @@
+<div class="flex flex-row p-3 justify-center w-full">
+  <!-- Add pet button -->
+  <button
+    (click)="redirectCreate()"
+    class="mb-2 w-full"
+    color="primary"
+    mat-raised-button
+  >
+    <mat-icon>add</mat-icon>
+    Agregar
+  </button>
+</div>
 <!--Actions-->
 <div
   class="flex flex-col md:flex-row md:justify-between justify-center items-center w-full p-2 pt-8"
@@ -91,65 +103,4 @@
     (eventClicked)="handleEvent('Clicked', $event.event)"
   >
   </mwl-calendar-day-view>
-</div>
-<!--Create schedule-->
-<div class="flex flex-col p-8">
-  <!--Form schedule-->
-  <form [formGroup]="scheduleForm" class="flex flex-col">
-    <mat-form-field>
-      <mat-label>Titulo</mat-label>
-      <input
-        matInput
-        formControlName="title"
-        placeholder="Ej. Asistir a la mascota"
-        maxlength="100"
-        autocomplete="off"
-      />
-    </mat-form-field>
-    <div class="flex flex-row w-full space-x-2 items-center">
-      <mat-form-field appearance="fill" class="w-full">
-        <mat-label>Fecha</mat-label>
-        <input
-          matInput
-          [matDatepicker]="picker"
-          readonly="true"
-          formControlName="date"
-          placeholder="Ej. dd-mm-aaaa"
-        />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="picker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Inicio</mat-label>
-        <mat-select formControlName="start" placeholder="Inicio">
-          <mat-option value="12:00"> 12:00 am </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <span class="text-3xl">-</span>
-      <mat-form-field>
-        <mat-label>Fin</mat-label>
-        <mat-select formControlName="end" placeholder="Fin">
-          <mat-option value="13:00"> 13:00 am </mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-  </form>
-  <!--End form schedule-->
-  <!--Actios form-->
-  <div class="flex flex-row justify-end">
-    <button
-      mat-raised-button
-      color="primary"
-      class="mt-4"
-      (click)="addSchedule()"
-    >
-      Agregar
-    </button>
-  </div>
-</div>
-<div>
-  {{ data | date : "medium" }}
 </div>

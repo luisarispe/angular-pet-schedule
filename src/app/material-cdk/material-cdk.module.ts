@@ -25,6 +25,7 @@ import {
   NgxMatTimepickerModule,
   NgxMatNativeDateModule,
 } from '@angular-material-components/datetime-picker';
+import { MatDialogModule } from '@angular/material/dialog';
 
 const declaration = [
   MatDatepickerModule,
@@ -47,6 +48,7 @@ const declaration = [
   NgxMatDatetimePickerModule,
   NgxMatTimepickerModule,
   NgxMatNativeDateModule,
+  MatDialogModule,
 ];
 
 @NgModule({

@@ -2,6 +2,7 @@ import { Action, State, StateContext } from '@ngxs/store';
 import { AddOwners } from './owners.actions';
 import { OwnersStateModel } from './owners.model';
 import { Owner } from 'src/app/modules/owners/interfaces/owner.interface';
+import { Injectable } from '@angular/core';
 
 @State({
   name: 'owners',
@@ -10,6 +11,7 @@ import { Owner } from 'src/app/modules/owners/interfaces/owner.interface';
     count: 0,
   },
 })
+@Injectable()
 export class OwnersState {
   @Action(AddOwners)
   addAll(

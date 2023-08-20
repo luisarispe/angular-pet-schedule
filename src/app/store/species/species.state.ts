@@ -1,6 +1,7 @@
 import { State, Action, StateContext } from '@ngxs/store';
 import { SpeciesStateModel } from './species.model';
 import { AddSpecies } from './species.actions';
+import { Injectable } from '@angular/core';
 
 @State({
   name: 'species',
@@ -8,6 +9,7 @@ import { AddSpecies } from './species.actions';
     species: [],
   },
 })
+@Injectable()
 export class SpeciesState {
   // Añade species al estado
   @Action(AddSpecies)

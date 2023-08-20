@@ -1,32 +1,31 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { CalendarEvent, CalendarView } from 'angular-calendar';
 import { EventColor } from 'calendar-utils';
-import { Subject } from 'rxjs';
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormControl,
-} from '@angular/forms';
-import {
-  startOfDay,
-  endOfDay,
-  isSameDay,
-  isSameMonth,
-  addHours,
-} from 'date-fns';
-import { formatDate } from '@angular/common';
+import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { isSameDay, isSameMonth, parseISO } from 'date-fns';
+import { Select } from '@ngxs/store';
+import { SchedulesSelector } from 'src/app/store/schedules/schedules.selector';
+import { Schedule } from '../../interfaces/schedule.interface';
+import { Router } from '@angular/router';
+import { ScheduleService } from '../../services/schedules.service';
+import { DatePipe, TitleCasePipe } from '@angular/common';
+import { FirstTitleUpperPipe } from 'src/app/shared/pipes/first-title-upper.pipe';
 
 const colors: Record<string, EventColor> = {
-  red: {
+  cancelado: {
     primary: '#ad2121',
     secondary: '#FAE3E3',
   },
-  blue: {
+  realizado: {
     primary: '#1e90ff',
     secondary: '#D1E8FF',
   },
-  yellow: {
+  pendiente: {
     primary: '#e3bc08',
     secondary: '#FDF1BA',
   },
@@ -38,68 +37,80 @@ const colors: Record<string, EventColor> = {
   templateUrl: './schedules.component.html',
   styleUrls: ['./schedules.component.css'],
 })
-export class SchedulesComponent {
+export class SchedulesComponent implements OnInit, OnDestroy {
+  @Select(SchedulesSelector.getSchedules) schedules$!: Observable<Schedule[]>;
   view: CalendarView = CalendarView.Month;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
   refresh = new Subject<void>();
-  events: CalendarEvent[] = [
-    {
-      start: addHours(startOfDay(new Date()), 1),
-      end: addHours(new Date(), 1),
-      title: 'Llevar al veterinario a mi perro a las 2pm hasta las 3pm',
-      color: { ...colors['red'] },
-      allDay: false,
-      resizable: {
-        beforeStart: true,
-        afterEnd: true,
-      },
-    },
-  ];
+  events: CalendarEvent[] = [];
   activeDayIsOpen: boolean = false;
+  private _destroyed$ = new Subject();
 
-  scheduleForm: FormGroup = this._formBuild.group({
-    title: ['', [Validators.required]],
-    date: ['', [Validators.required]],
-    start: [null, [Validators.required]],
-    end: [null, [Validators.required]],
-  });
-  data: Date = new Date('2023-01-20T02:30:00.000Z');
+  constructor(
+    private _router: Router,
+    private _service: ScheduleService,
+    private _datePipe: DatePipe,
+    private _firstTitlePipe: FirstTitleUpperPipe,
+    private _titleCasePipe: TitleCasePipe
+  ) {}
 
-  public formGroup = new FormGroup({
-    date: new FormControl(null, [Validators.required]),
-  });
-
-  constructor(private _formBuild: FormBuilder) {}
-  addSchedule() {
-    if (this.scheduleForm.invalid) {
-      this.scheduleForm.markAllAsTouched();
-      return;
-    }
-    const { title, date, start, end } = this.scheduleForm.value;
-    const dates = formatDate(date, 'yyyy-MM-dd', 'en-US');
-    const dateStart = dates + ' ' + start + ':00';
-    const dateEnd = dates + ' ' + end + ':00';
-    this.events = [
-      ...this.events,
-      {
-        meta: {
-          id: 1,
-        },
-        id: this.events.length + 1,
-        title: title,
-        start: new Date(dateStart),
-        end: new Date(dateEnd),
-        color: colors['red'],
-        draggable: false,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      },
-    ];
+  ngOnInit(): void {
+    this._service.findAll().pipe(take(1)).subscribe();
+    this.loadSchedules();
   }
 
+  ngOnDestroy(): void {
+    this._destroyed$.next(null);
+    this._destroyed$.complete();
+  }
+
+  loadSchedules() {
+    this.schedules$.pipe(takeUntil(this._destroyed$)).subscribe({
+      next: (resp) => {
+        this.events = resp.map((schedule) => {
+          const { status, id, dateStart, dateEnd } = schedule;
+
+          const titleComplete = this.createTitle(schedule);
+          return {
+            id,
+            title: titleComplete,
+            start: new Date(dateStart),
+            end: new Date(dateEnd),
+            color: colors[status],
+            draggable: false,
+            resizable: {
+              beforeStart: true,
+              afterEnd: true,
+            },
+          };
+        });
+        this.refresh.next();
+      },
+      error: () => {
+        this.events = [];
+        this.refresh.next();
+      },
+    });
+  }
+  createTitle(schedule: Schedule): string {
+    const { status, pet, title, dateStart, dateEnd } = schedule;
+
+    const titleComplete = `Estado: ${this._firstTitlePipe.transform(
+      status
+    )}, Mascota: ${this._titleCasePipe.transform(
+      pet.name
+    )}, Propietario: ${this._titleCasePipe.transform(
+      pet.owner.fullName
+    )}, Titulo: ${this._firstTitlePipe.transform(
+      title
+    )} Hora: ${this._datePipe.transform(
+      dateStart,
+      'shortTime'
+    )} | ${this._datePipe.transform(dateEnd, 'shortTime')}`;
+
+    return titleComplete;
+  }
   dayClicked({ date, events }: { date: Date; events: CalendarEvent[] }): void {
     if (isSameMonth(date, this.viewDate)) {
       if (
@@ -115,35 +126,20 @@ export class SchedulesComponent {
   }
 
   handleEvent(action: string, event: CalendarEvent): void {
-    console.log(action, event);
+    if (action === 'Clicked')
+      this._router.navigate(['/schedules/create'], {
+        queryParams: { id: event.id },
+      });
   }
-
-  addEvent(): void {
-    this.events = [
-      ...this.events,
-      {
-        title: 'New event',
-        start: startOfDay(new Date()),
-        end: endOfDay(new Date()),
-        color: colors['red'],
-        draggable: false,
-        resizable: {
-          beforeStart: true,
-          afterEnd: true,
-        },
-      },
-    ];
-  }
-
-  deleteEvent(eventToDelete: CalendarEvent) {
-    this.events = this.events.filter((event) => event !== eventToDelete);
-  }
-
   setView(view: CalendarView) {
     this.view = view;
   }
 
   closeOpenMonthViewDay() {
     this.activeDayIsOpen = false;
+  }
+
+  redirectCreate() {
+    this._router.navigateByUrl('/schedules/create');
   }
 }

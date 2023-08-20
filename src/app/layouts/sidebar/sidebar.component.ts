@@ -53,10 +53,21 @@ export class SidebarComponent {
       ],
     },
     {
-      route: '/schedules',
+      route: '',
       name: 'Agendas',
       icon: 'calendar_today',
-      children: [],
+      children: [
+        {
+          route: '/schedules',
+          name: 'Lista',
+          icon: 'radio_button_unchecked',
+        },
+        {
+          route: '/schedules/create',
+          name: 'Agregar',
+          icon: 'radio_button_unchecked',
+        },
+      ],
     },
   ];
 

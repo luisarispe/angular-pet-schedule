@@ -1,6 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { ChangeLoader } from './loader.actions';
 import { LoaderStateModel } from './loader.model';
+import { Injectable } from '@angular/core';
 
 @State({
   name: 'loader',
@@ -8,6 +9,7 @@ import { LoaderStateModel } from './loader.model';
     loader: false,
   },
 })
+@Injectable()
 export class LoaderState {
   @Action(ChangeLoader)
   changeLoader(
